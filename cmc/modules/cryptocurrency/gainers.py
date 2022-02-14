@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 
 """Module for fetching data of Cryptocurrencies which were the top gainers
-in the last 24 hours on CoinMarketCap website.
-Data is scraped through Selenium (to load JavaScript components) and
-BeautifulSoup (to parse website data).
-"""
+in the last 24 hours on CoinMarketCap website."""
 
 from datetime import datetime
 import os

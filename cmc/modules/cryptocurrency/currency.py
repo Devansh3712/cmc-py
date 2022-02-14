@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-"""Module for fetching CryptoCurrency data from CoinMarketCap website.
-Data is scraped through Selenium (to load JavaScript components) and
-BeautifulSoup (to parse website data).
-"""
+"""Module for fetching CryptoCurrency data from CoinMarketCap website."""
 
 from datetime import datetime
 import os

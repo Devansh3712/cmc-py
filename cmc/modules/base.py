@@ -4,7 +4,8 @@
 other py-cmc modules.
 
 A random User-Agent and a proxy is used for requests session and Selenium
-driver in order to circumvent an IP ban.
+driver in order to circumvent an IP ban. Data is scraped through Selenium
+(to load JavaScript components) and BeautifulSoup (to parse website data).
 """
 
 import json
@@ -13,8 +14,6 @@ import random
 import re
 import time
 from typing import Any, Dict, List, Optional
-import bs4
-from bs4 import BeautifulSoup
 import requests
 from requests.structures import CaseInsensitiveDict
 from selenium import webdriver

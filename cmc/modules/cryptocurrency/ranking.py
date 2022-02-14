@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
 """Module for fetching CryptoCurrency rankings from CoinMarketCap
-website. Data is scraped through Selenium (to load JavaScript components)
-and BeautifulSoup (to parse website data).
-"""
+website."""
 
 import os
 import time

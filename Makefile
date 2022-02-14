@@ -19,3 +19,5 @@ requirements:
 
 test:
 	$(PY) -m pytest -v
+
+.PHONY: clean format install lint requirements test
