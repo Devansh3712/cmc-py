@@ -32,10 +32,6 @@ class MostVisited(CMCBaseClass):
         """Scrape the table from most visited CryptoCurrencies page data
         and return the scraped data.
 
-        Raises:
-            InvalidCryptoCurrencyURL: Raised when the URL is
-            not valid.
-
         Returns:
             bs4.BeautifulSoup: Scraped page data.
         """

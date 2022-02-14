@@ -112,7 +112,7 @@ class Ranking(CMCBaseClass):
         self, page_data: bs4.element.Tag, start_rank: int
     ) -&gt; Dict[int, Dict[str, str]]:
         &#34;&#34;&#34;Scrape cryptocurrency names and ranks from data returned by
-        the get_page_data() method.
+        the __get_page_data() method.
 
         Args:
             page_data (bs4.element.Tag): Scraped page data.
@@ -126,13 +126,10 @@ class Ranking(CMCBaseClass):
         data = page_data.find_all(&#34;tr&#34;)
         for rank, content in enumerate(data):
             td = content.find_all(&#34;td&#34;)[2]
-            cryptocurrency = td.find_all(
-                &#34;div&#34;, class_=&#34;sc-16r8icm-0 sc-1teo54s-1 dNOTPP&#34;
-            )
-            if cryptocurrency == []:
+            try:
                 name: str = td.find_all(&#34;span&#34;)[1].text
-            else:
-                name: str = cryptocurrency[0].find(&#34;p&#34;, class_=&#34;sc-1eb5slv-0 iworPT&#34;).text  # type: ignore
+            except:
+                name: str = td.find(&#34;p&#34;, class_=&#34;sc-1eb5slv-0 iworPT&#34;).text  # type: ignore
             try:
                 symbol: str = (
                     td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;)
@@ -249,7 +246,7 @@ contains &lt;= 100 cryptocurrencies.</p>
         self, page_data: bs4.element.Tag, start_rank: int
     ) -&gt; Dict[int, Dict[str, str]]:
         &#34;&#34;&#34;Scrape cryptocurrency names and ranks from data returned by
-        the get_page_data() method.
+        the __get_page_data() method.
 
         Args:
             page_data (bs4.element.Tag): Scraped page data.
@@ -263,13 +260,10 @@ contains &lt;= 100 cryptocurrencies.</p>
         data = page_data.find_all(&#34;tr&#34;)
         for rank, content in enumerate(data):
             td = content.find_all(&#34;td&#34;)[2]
-            cryptocurrency = td.find_all(
-                &#34;div&#34;, class_=&#34;sc-16r8icm-0 sc-1teo54s-1 dNOTPP&#34;
-            )
-            if cryptocurrency == []:
+            try:
                 name: str = td.find_all(&#34;span&#34;)[1].text
-            else:
-                name: str = cryptocurrency[0].find(&#34;p&#34;, class_=&#34;sc-1eb5slv-0 iworPT&#34;).text  # type: ignore
+            except:
+                name: str = td.find(&#34;p&#34;, class_=&#34;sc-1eb5slv-0 iworPT&#34;).text  # type: ignore
             try:
                 symbol: str = (
                     td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;)

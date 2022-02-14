@@ -32,10 +32,6 @@ class Trending(CMCBaseClass):
         """Scrape the table from trending CryptoCurrencies page data
         and return the scraped data.
 
-        Raises:
-            InvalidCryptoCurrencyURL: Raised when the URL is
-            not valid.
-
         Returns:
             bs4.BeautifulSoup: Scraped page data.
         """

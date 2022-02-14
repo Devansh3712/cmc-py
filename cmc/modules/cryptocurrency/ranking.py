@@ -81,7 +81,7 @@ class Ranking(CMCBaseClass):
         self, page_data: bs4.element.Tag, start_rank: int
     ) -> Dict[int, Dict[str, str]]:
         """Scrape cryptocurrency names and ranks from data returned by
-        the get_page_data() method.
+        the __get_page_data() method.
 
         Args:
             page_data (bs4.element.Tag): Scraped page data.
@@ -95,13 +95,10 @@ class Ranking(CMCBaseClass):
         data = page_data.find_all("tr")
         for rank, content in enumerate(data):
             td = content.find_all("td")[2]
-            cryptocurrency = td.find_all(
-                "div", class_="sc-16r8icm-0 sc-1teo54s-1 dNOTPP"
-            )
-            if cryptocurrency == []:
+            try:
                 name: str = td.find_all("span")[1].text
-            else:
-                name: str = cryptocurrency[0].find("p", class_="sc-1eb5slv-0 iworPT").text  # type: ignore
+            except:
+                name: str = td.find("p", class_="sc-1eb5slv-0 iworPT").text  # type: ignore
             try:
                 symbol: str = (
                     td.find("a", class_="cmc-link")

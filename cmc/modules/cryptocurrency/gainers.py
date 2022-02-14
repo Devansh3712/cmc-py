@@ -32,10 +32,6 @@ class TopGainers(CMCBaseClass):
         """Scrape the gainers table from gainers-losers page data
         and return the scraped data.
 
-        Raises:
-            InvalidCryptoCurrencyURL: Raised when the URL is
-            not valid.
-
         Returns:
             bs4.BeautifulSoup: Scraped page data.
         """
