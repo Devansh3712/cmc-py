@@ -4,9 +4,6 @@ PIP = venv\Scripts\pip
 clean:
 	$(PY) -m pyclean .
 
-docs:
-	$(PY) -m pdoc3 --html ./cmc --output-dir ./docs
-
 format:
 	$(PY) -m black ./cmc ./tests
 
