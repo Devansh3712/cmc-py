@@ -15,11 +15,15 @@ h11==0.13.0; python_version >= "3.7" and python_version < "4.0" and python_full_
 idna==3.3; python_version >= "3.7" and python_version < "4.0" and (python_version >= "3.7" and python_full_version < "3.0.0" and python_version < "4.0" or python_full_version >= "3.5.0" and python_version < "4" and python_version >= "3.7") and (python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.6.0" and python_version >= "3.6")
 iniconfig==1.1.1; python_version >= "3.6"
 lxml==4.7.1; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.5.0")
+mako==1.1.6; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.4.0" and python_version >= "3.6"
+markdown==3.3.6; python_version >= "3.6"
+markupsafe==2.0.1; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.4.0" and python_version >= "3.6"
 mypy-extensions==0.4.3; python_version >= "3.6" and python_full_version >= "3.6.2"
 mypy==0.931; python_version >= "3.6"
 outcome==1.1.0; python_version >= "3.7" and python_version < "4.0"
 packaging==21.3; python_version >= "3.6"
 pathspec==0.9.0; python_full_version >= "3.6.2"
+pdoc3==0.10.0; python_version >= "3.6"
 platformdirs==2.5.0; python_version >= "3.7" and python_full_version >= "3.6.2"
 pluggy==1.0.0; python_version >= "3.6"
 py==1.11.0; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"

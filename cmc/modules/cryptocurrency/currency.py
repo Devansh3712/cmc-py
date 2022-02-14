@@ -129,16 +129,22 @@ class CryptoCurrency(CMCBaseClass):
             .find("div", class_="supplyBlockPercentage")
             .text
         )
-        max_supply: str = (
-            page_data.find("div", class_="sc-16r8icm-0 dwCYJB")
-            .find("div", class_="maxSupplyValue")
-            .text
-        )
-        total_supply: str = (
-            page_data.find("div", class_="sc-16r8icm-0 hWTiuI")
-            .find("div", class_="maxSupplyValue")
-            .text
-        )
+        try:
+            max_supply: Optional[str] = (
+                page_data.find("div", class_="sc-16r8icm-0 dwCYJB")
+                .find("div", class_="maxSupplyValue")
+                .text
+            )
+        except:
+            max_supply: Optional[str] = None  # type: ignore
+        try:
+            total_supply: Optional[str] = (
+                page_data.find("div", class_="sc-16r8icm-0 hWTiuI")
+                .find("div", class_="maxSupplyValue")
+                .text
+            )
+        except:
+            total_supply: Optional[str] = None  # type: ignore
         price_change: str = (
             page_data.find("div", class_="sc-16r8icm-0 fmPyWa")
             .tbody.find_all("tr")[1]
