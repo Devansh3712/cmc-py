@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
+from cmc.utils.exceptions import InvalidExchangeURL
 
 
 class Exchange(CMCBaseClass):
@@ -41,12 +42,17 @@ class Exchange(CMCBaseClass):
         page_data = driver.page_source
         driver.quit()
         if not self.__check_cryptocurrency_url(page_data):
-            raise
+            raise InvalidExchangeURL(self.exchange)
         soup = BeautifulSoup(page_data, features="lxml")
         return soup
 
     @property
     def get_data(self) -> Dict[str, Any]:
+        """Scrape the data of a specific Exchange.
+
+        Returns:
+            Dict[str, Any]: Scraped Exchange data.
+        """
         page_data = self.__get_page_data
         name: str = page_data.find("h2", class_="sc-1q9q90x-0 sc-1xafy60-3 dzkWnG").text
         volume_24h: Tuple[str, ...] = (

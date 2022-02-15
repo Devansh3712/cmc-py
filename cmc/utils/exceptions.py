@@ -18,6 +18,21 @@ class InvalidCryptoCurrencyURL(Exception):
         return f"{self.cryptocurrency} is not a valid webpage."
 
 
+class InvalidExchangeURL(Exception):
+    """Raised when the exchange webpage is not found on
+    CoinMarketCap website."""
+
+    def __init__(self, exchange: str) -> None:
+        """
+        Args:
+            exchange (str): Link of the exchange webpage.
+        """
+        self.exchange = exchange
+
+    def __str__(self) -> str:
+        return f"{self.exchange} is not a valid webpage."
+
+
 class ProxyTimeOut(Exception):
     """Raised when a proxy cannot be fetched from the API."""
 
