@@ -8,3 +8,4 @@ from cmc.modules.cryptocurrency.trending import Trending
 
 from cmc.modules.exchange.spot import Spot
 from cmc.modules.exchange.derivatives import Derivatives
+from cmc.modules.exchange.dex import Dex
