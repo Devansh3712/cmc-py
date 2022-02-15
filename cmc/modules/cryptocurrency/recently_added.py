@@ -21,8 +21,7 @@ class RecentlyAdded(CMCBaseClass):
     def __init__(self, proxy: Optional[str] = None) -> None:
         """
         Args:
-            proxy (Optional[str], optional): Proxy to be used for Selenium and
-            requests Session. Defaults to None.
+            proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
         """
         super().__init__(proxy)
         self.base_url = "https://coinmarketcap.com/new/"

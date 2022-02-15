@@ -25,8 +25,7 @@ class Ranking(CMCBaseClass):
         Args:
             pages (List[int], optional): Pages to scrape data from. Defaults to [1].
             ratelimit (int, optional): Ratelimit for parsing each page. Defaults to 2 seconds.
-            proxy (Optional[str], optional): Proxy to be used for Selenium and
-            requests Session. Defaults to None.
+            proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
         """
         super().__init__(proxy)
         self.base_url = "https://coinmarketcap.com/?page="

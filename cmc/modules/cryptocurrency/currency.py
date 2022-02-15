@@ -21,8 +21,7 @@ class CryptoCurrency(CMCBaseClass):
         """
         Args:
             cryptocurrency (str): Name of Cryptocurrency.
-            proxy (Optional[str], optional): Proxy to be used for Selenium and
-            requests Session. Defaults to None.
+            proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
         """
         super().__init__(proxy)
         self.base_url = "https://coinmarketcap.com/currencies/"
@@ -34,8 +33,7 @@ class CryptoCurrency(CMCBaseClass):
         return the scraped data.
 
         Raises:
-            InvalidCryptoCurrencyURL: Raised when the URL is
-            not valid.
+            InvalidCryptoCurrencyURL: Raised when the URL is not valid.
 
         Returns:
             bs4.BeautifulSoup: Scraped page data.

@@ -50,8 +50,7 @@ class CryptoCurrency(CMCBaseClass):
         &#34;&#34;&#34;
         Args:
             cryptocurrency (str): Name of Cryptocurrency.
-            proxy (Optional[str], optional): Proxy to be used for Selenium and
-            requests Session. Defaults to None.
+            proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
         &#34;&#34;&#34;
         super().__init__(proxy)
         self.base_url = &#34;https://coinmarketcap.com/currencies/&#34;
@@ -63,8 +62,7 @@ class CryptoCurrency(CMCBaseClass):
         return the scraped data.
 
         Raises:
-            InvalidCryptoCurrencyURL: Raised when the URL is
-            not valid.
+            InvalidCryptoCurrencyURL: Raised when the URL is not valid.
 
         Returns:
             bs4.BeautifulSoup: Scraped page data.
@@ -234,9 +232,8 @@ class CryptoCurrency(CMCBaseClass):
 <dt><strong><code>cryptocurrency</code></strong> :&ensp;<code>str</code></dt>
 <dd>Name of Cryptocurrency.</dd>
 <dt><strong><code>proxy</code></strong> :&ensp;<code>Optional[str]</code>, optional</dt>
-<dd>Proxy to be used for Selenium and</dd>
-</dl>
-<p>requests Session. Defaults to None.</p></div>
+<dd>Proxy to be used for Selenium and requests Session. Defaults to None.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -248,8 +245,7 @@ class CryptoCurrency(CMCBaseClass):
         &#34;&#34;&#34;
         Args:
             cryptocurrency (str): Name of Cryptocurrency.
-            proxy (Optional[str], optional): Proxy to be used for Selenium and
-            requests Session. Defaults to None.
+            proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
         &#34;&#34;&#34;
         super().__init__(proxy)
         self.base_url = &#34;https://coinmarketcap.com/currencies/&#34;
@@ -261,8 +257,7 @@ class CryptoCurrency(CMCBaseClass):
         return the scraped data.
 
         Raises:
-            InvalidCryptoCurrencyURL: Raised when the URL is
-            not valid.
+            InvalidCryptoCurrencyURL: Raised when the URL is not valid.
 
         Returns:
             bs4.BeautifulSoup: Scraped page data.

@@ -33,8 +33,7 @@ class CMCBaseClass:
     def __init__(self, proxy: Optional[str]):
         """
         Args:
-            proxy (Optional[str]): Proxy to be used for Selenium and
-            requests Session.
+            proxy (Optional[str]): Proxy to be used for Selenium and requests Session.
         """
         self.current_dir = os.path.dirname(os.path.realpath(__file__))
         self.parent_dir = os.path.dirname(self.current_dir)
@@ -67,8 +66,7 @@ class CMCBaseClass:
         """Fetch a random HTTPS proxy for using with Selenium.
 
         Raises:
-            ProxyTimeOut: Raised when a proxy cannot be fetched
-            from the API.
+            ProxyTimeOut: Raised when a proxy cannot be fetched from the API.
 
         Returns:
             str: Fetched proxy from the API.
