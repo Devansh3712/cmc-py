@@ -161,7 +161,7 @@ class CryptoCurrency(CMCBaseClass):
             "circulating_supply_percent": circulating_supply_percent,
             "max_supply": max_supply,
             "total_supply": total_supply,
-            "url": self.cryptocurrency,
+            "cmc_url": self.cryptocurrency,
             "timestamp": datetime.now(),
         }
         return cryptocurrency_data

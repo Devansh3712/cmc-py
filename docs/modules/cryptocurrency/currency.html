@@ -190,7 +190,7 @@ class CryptoCurrency(CMCBaseClass):
             &#34;circulating_supply_percent&#34;: circulating_supply_percent,
             &#34;max_supply&#34;: max_supply,
             &#34;total_supply&#34;: total_supply,
-            &#34;url&#34;: self.cryptocurrency,
+            &#34;cmc_url&#34;: self.cryptocurrency,
             &#34;timestamp&#34;: datetime.now(),
         }
         return cryptocurrency_data
@@ -385,7 +385,7 @@ class CryptoCurrency(CMCBaseClass):
             &#34;circulating_supply_percent&#34;: circulating_supply_percent,
             &#34;max_supply&#34;: max_supply,
             &#34;total_supply&#34;: total_supply,
-            &#34;url&#34;: self.cryptocurrency,
+            &#34;cmc_url&#34;: self.cryptocurrency,
             &#34;timestamp&#34;: datetime.now(),
         }
         return cryptocurrency_data
@@ -532,7 +532,7 @@ def get_data(self) -&gt; Dict[str, Any]:
         &#34;circulating_supply_percent&#34;: circulating_supply_percent,
         &#34;max_supply&#34;: max_supply,
         &#34;total_supply&#34;: total_supply,
-        &#34;url&#34;: self.cryptocurrency,
+        &#34;cmc_url&#34;: self.cryptocurrency,
         &#34;timestamp&#34;: datetime.now(),
     }
     return cryptocurrency_data</code></pre>

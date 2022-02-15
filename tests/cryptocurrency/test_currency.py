@@ -61,4 +61,4 @@ def test_get_data(cryptocurrency: str, data: Dict[str, str]) -> None:
     assert result["name"] == data["name"]
     assert result["symbol"] == data["symbol"]
     assert result["max_supply"] == data["max_supply"]
-    assert result["url"] == data["url"]
+    assert result["cmc_url"] == data["url"]
