@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>cmc.modules.cryptocurrency.ranking API documentation</title>
-<meta name="description" content="Module for fetching CryptoCurrency rankings from CoinMarketCap
+<title>cmc.modules.exchange.derivatives API documentation</title>
+<meta name="description" content="Module for fetching derivative exchange rankings from CoinMarketCap
 website." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -20,10 +20,10 @@ website." />
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>cmc.modules.cryptocurrency.ranking</code></h1>
+<h1 class="title">Module <code>cmc.modules.exchange.derivatives</code></h1>
 </header>
 <section id="section-intro">
-<p>Module for fetching CryptoCurrency rankings from CoinMarketCap
+<p>Module for fetching derivative exchange rankings from CoinMarketCap
 website.</p>
 <details class="source">
 <summary>
@@ -31,13 +31,13 @@ website.</p>
 </summary>
 <pre><code class="python">#!/usr/bin/env python
 
-&#34;&#34;&#34;Module for fetching CryptoCurrency rankings from CoinMarketCap
+&#34;&#34;&#34;Module for fetching derivative exchange rankings from CoinMarketCap
 website.&#34;&#34;&#34;
 
 from datetime import datetime
 import os
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 import bs4
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -45,106 +45,68 @@ from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
 
 
-class Ranking(CMCBaseClass):
-    &#34;&#34;&#34;Class for scraping cryptocurrency ranking. Each page
-    contains &lt;= 100 cryptocurrencies.
-    &#34;&#34;&#34;
+class Derivatives(CMCBaseClass):
+    &#34;&#34;&#34;Class for scraping the data of top derivative exchanges.&#34;&#34;&#34;
 
-    def __init__(
-        self, pages: List[int] = [1], ratelimit: int = 2, proxy: Optional[str] = None
-    ) -&gt; None:
+    def __init__(self, proxy: Optional[str] = None) -&gt; None:
         &#34;&#34;&#34;
         Args:
-            pages (List[int], optional): Pages to scrape data from. Defaults to [1].
-            ratelimit (int, optional): Ratelimit for parsing each page. Defaults to 2 seconds.
             proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
         &#34;&#34;&#34;
         super().__init__(proxy)
-        self.base_url = &#34;https://coinmarketcap.com/?page=&#34;
-        self.ratelimit = ratelimit
-        self.pages = pages
+        self.base_url = &#34;https://coinmarketcap.com/rankings/exchanges/derivatives/&#34;
 
     @property
-    def get_data(self) -&gt; Dict[int, Dict[int, Dict[str, Any]]]:
-        &#34;&#34;&#34;Get a dictionary of cryptocurrency ranks with page number as keys
-        and rankings as values.
+    def __get_page_data(self) -&gt; bs4.BeautifulSoup:
+        &#34;&#34;&#34;Scrape the table from top derivative exchanges page data
+        and return the scraped data.
 
         Returns:
-            Dict[int, Dict[int, Dict[str, Any]]]: Cryptocurrency rankings of all pages.
-        &#34;&#34;&#34;
-        ranks: Dict[int, Dict[int, Dict[str, Any]]] = {}
-        for page in self.pages:
-            start_rank = (page - 1) * 100
-            page_data = self.__get_page_data(page)
-            ranks[page] = self.__get_cryptocurrency_ranks(page_data, start_rank)
-            start_rank += len(ranks[page])
-            time.sleep(self.ratelimit)
-        return ranks
-
-    def __get_page_data(self, page: int) -&gt; bs4.BeautifulSoup:
-        &#34;&#34;&#34;Scrape a single ranking page from CoinMarketCap.
-        Uses selenium to load javascript elements of the website.
-
-        Args:
-            page (int): Page to scrape.
-
-        Returns:
-            bs4.BeautifulSoup: Scraped website data.
+            bs4.BeautifulSoup: Scraped page data.
         &#34;&#34;&#34;
         driver = webdriver.Chrome(
             service=self.service,
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.base_url + str(page))
+        driver.get(self.base_url)
         driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
         time.sleep(1)
         result = driver.find_element(
-            By.XPATH, &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[5]/table/tbody&#39;
+            By.XPATH,
+            &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[2]/table/tbody&#39;,
         )
         page_data = result.get_attribute(&#34;innerHTML&#34;)
         driver.quit()
         soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
         return soup
 
-    def __get_cryptocurrency_ranks(
-        self, page_data: bs4.element.Tag, start_rank: int
-    ) -&gt; Dict[int, Dict[str, Any]]:
-        &#34;&#34;&#34;Scrape cryptocurrency names and ranks from data returned by
-        the __get_page_data() method.
-
-        Args:
-            page_data (bs4.element.Tag): Scraped page data.
-            start_rank (int): Rank to start storing from.
+    @property
+    def get_data(self) -&gt; Dict[int, Dict[str, Any]]:
+        &#34;&#34;&#34;Scrape exchanges names and ranks from data returned by
+        __get_page_data() method.
 
         Returns:
-            Dict[int, Dict[str, Dict[str, Any]]]: Cryptocurrency rankings of the current page.
+            Dict[int, Dict[str, Any]]: Exchange platform rankings.
         &#34;&#34;&#34;
-        cryptocurrency_ranking: Dict[int, Dict[str, Any]] = {}
+        derivatives: Dict[int, Dict[str, Any]] = {}
+        page_data = self.__get_page_data
         data = page_data.find_all(&#34;tr&#34;)
         for rank, content in enumerate(data):
-            td = content.find_all(&#34;td&#34;)[2]
+            td = content.find_all(&#34;td&#34;)[1]
             try:
-                name: str = td.find_all(&#34;span&#34;)[1].text
+                name: str = td.find(&#34;p&#34;, class_=&#34;sc-1eb5slv-0 iworPT&#34;).text
             except:
-                name: str = td.find(&#34;p&#34;, class_=&#34;sc-1eb5slv-0 iworPT&#34;).text  # type: ignore
-            try:
-                symbol: str = (
-                    td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;)
-                    .find(&#34;p&#34;, class_=&#34;sc-1eb5slv-0 gGIpIK coin-item-symbol&#34;)
-                    .text
-                )
-            except:
-                symbol: str = td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;).find(&#34;span&#34;, class_=&#34;crypto-symbol&#34;).text  # type: ignore
+                name: str = td.text  # type: ignore
             cmc_link: str = td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;)[&#34;href&#34;]
-            cryptocurrency_ranking[start_rank + rank + 1] = {
+            derivatives[rank + 1] = {
                 &#34;name&#34;: name,
-                &#34;symbol&#34;: symbol,
-                &#34;cmc_name&#34;: cmc_link.split(&#34;/&#34;)[-2],
+                &#34;cmc_link&#34;: cmc_link,
+                &#34;cmc_name&#34;: cmc_link.split(&#34;/&#34;)[-1].split(&#34;?&#34;)[0],
                 &#34;url&#34;: self.cmc_url + cmc_link,
                 &#34;timestamp&#34;: datetime.now(),
             }
-        return cryptocurrency_ranking</code></pre>
+        return derivatives</code></pre>
 </details>
 </section>
 <section>
@@ -156,19 +118,14 @@ class Ranking(CMCBaseClass):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="cmc.modules.cryptocurrency.ranking.Ranking"><code class="flex name class">
-<span>class <span class="ident">Ranking</span></span>
-<span>(</span><span>pages: List[int] = [1], ratelimit: int = 2, proxy: Optional[str] = None)</span>
+<dt id="cmc.modules.exchange.derivatives.Derivatives"><code class="flex name class">
+<span>class <span class="ident">Derivatives</span></span>
+<span>(</span><span>proxy: Optional[str] = None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class for scraping cryptocurrency ranking. Each page
-contains &lt;= 100 cryptocurrencies.</p>
+<div class="desc"><p>Class for scraping the data of top derivative exchanges.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>pages</code></strong> :&ensp;<code>List[int]</code>, optional</dt>
-<dd>Pages to scrape data from. Defaults to [1].</dd>
-<dt><strong><code>ratelimit</code></strong> :&ensp;<code>int</code>, optional</dt>
-<dd>Ratelimit for parsing each page. Defaults to 2 seconds.</dd>
 <dt><strong><code>proxy</code></strong> :&ensp;<code>Optional[str]</code>, optional</dt>
 <dd>Proxy to be used for Selenium and requests Session. Defaults to None.</dd>
 </dl></div>
@@ -176,106 +133,68 @@ contains &lt;= 100 cryptocurrencies.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Ranking(CMCBaseClass):
-    &#34;&#34;&#34;Class for scraping cryptocurrency ranking. Each page
-    contains &lt;= 100 cryptocurrencies.
-    &#34;&#34;&#34;
+<pre><code class="python">class Derivatives(CMCBaseClass):
+    &#34;&#34;&#34;Class for scraping the data of top derivative exchanges.&#34;&#34;&#34;
 
-    def __init__(
-        self, pages: List[int] = [1], ratelimit: int = 2, proxy: Optional[str] = None
-    ) -&gt; None:
+    def __init__(self, proxy: Optional[str] = None) -&gt; None:
         &#34;&#34;&#34;
         Args:
-            pages (List[int], optional): Pages to scrape data from. Defaults to [1].
-            ratelimit (int, optional): Ratelimit for parsing each page. Defaults to 2 seconds.
             proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
         &#34;&#34;&#34;
         super().__init__(proxy)
-        self.base_url = &#34;https://coinmarketcap.com/?page=&#34;
-        self.ratelimit = ratelimit
-        self.pages = pages
+        self.base_url = &#34;https://coinmarketcap.com/rankings/exchanges/derivatives/&#34;
 
     @property
-    def get_data(self) -&gt; Dict[int, Dict[int, Dict[str, Any]]]:
-        &#34;&#34;&#34;Get a dictionary of cryptocurrency ranks with page number as keys
-        and rankings as values.
+    def __get_page_data(self) -&gt; bs4.BeautifulSoup:
+        &#34;&#34;&#34;Scrape the table from top derivative exchanges page data
+        and return the scraped data.
 
         Returns:
-            Dict[int, Dict[int, Dict[str, Any]]]: Cryptocurrency rankings of all pages.
-        &#34;&#34;&#34;
-        ranks: Dict[int, Dict[int, Dict[str, Any]]] = {}
-        for page in self.pages:
-            start_rank = (page - 1) * 100
-            page_data = self.__get_page_data(page)
-            ranks[page] = self.__get_cryptocurrency_ranks(page_data, start_rank)
-            start_rank += len(ranks[page])
-            time.sleep(self.ratelimit)
-        return ranks
-
-    def __get_page_data(self, page: int) -&gt; bs4.BeautifulSoup:
-        &#34;&#34;&#34;Scrape a single ranking page from CoinMarketCap.
-        Uses selenium to load javascript elements of the website.
-
-        Args:
-            page (int): Page to scrape.
-
-        Returns:
-            bs4.BeautifulSoup: Scraped website data.
+            bs4.BeautifulSoup: Scraped page data.
         &#34;&#34;&#34;
         driver = webdriver.Chrome(
             service=self.service,
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.base_url + str(page))
+        driver.get(self.base_url)
         driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
         time.sleep(1)
         result = driver.find_element(
-            By.XPATH, &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[5]/table/tbody&#39;
+            By.XPATH,
+            &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[2]/table/tbody&#39;,
         )
         page_data = result.get_attribute(&#34;innerHTML&#34;)
         driver.quit()
         soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
         return soup
 
-    def __get_cryptocurrency_ranks(
-        self, page_data: bs4.element.Tag, start_rank: int
-    ) -&gt; Dict[int, Dict[str, Any]]:
-        &#34;&#34;&#34;Scrape cryptocurrency names and ranks from data returned by
-        the __get_page_data() method.
-
-        Args:
-            page_data (bs4.element.Tag): Scraped page data.
-            start_rank (int): Rank to start storing from.
+    @property
+    def get_data(self) -&gt; Dict[int, Dict[str, Any]]:
+        &#34;&#34;&#34;Scrape exchanges names and ranks from data returned by
+        __get_page_data() method.
 
         Returns:
-            Dict[int, Dict[str, Dict[str, Any]]]: Cryptocurrency rankings of the current page.
+            Dict[int, Dict[str, Any]]: Exchange platform rankings.
         &#34;&#34;&#34;
-        cryptocurrency_ranking: Dict[int, Dict[str, Any]] = {}
+        derivatives: Dict[int, Dict[str, Any]] = {}
+        page_data = self.__get_page_data
         data = page_data.find_all(&#34;tr&#34;)
         for rank, content in enumerate(data):
-            td = content.find_all(&#34;td&#34;)[2]
+            td = content.find_all(&#34;td&#34;)[1]
             try:
-                name: str = td.find_all(&#34;span&#34;)[1].text
+                name: str = td.find(&#34;p&#34;, class_=&#34;sc-1eb5slv-0 iworPT&#34;).text
             except:
-                name: str = td.find(&#34;p&#34;, class_=&#34;sc-1eb5slv-0 iworPT&#34;).text  # type: ignore
-            try:
-                symbol: str = (
-                    td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;)
-                    .find(&#34;p&#34;, class_=&#34;sc-1eb5slv-0 gGIpIK coin-item-symbol&#34;)
-                    .text
-                )
-            except:
-                symbol: str = td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;).find(&#34;span&#34;, class_=&#34;crypto-symbol&#34;).text  # type: ignore
+                name: str = td.text  # type: ignore
             cmc_link: str = td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;)[&#34;href&#34;]
-            cryptocurrency_ranking[start_rank + rank + 1] = {
+            derivatives[rank + 1] = {
                 &#34;name&#34;: name,
-                &#34;symbol&#34;: symbol,
-                &#34;cmc_name&#34;: cmc_link.split(&#34;/&#34;)[-2],
+                &#34;cmc_link&#34;: cmc_link,
+                &#34;cmc_name&#34;: cmc_link.split(&#34;/&#34;)[-1].split(&#34;?&#34;)[0],
                 &#34;url&#34;: self.cmc_url + cmc_link,
                 &#34;timestamp&#34;: datetime.now(),
             }
-        return cryptocurrency_ranking</code></pre>
+        return derivatives</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -283,35 +202,45 @@ contains &lt;= 100 cryptocurrencies.</p>
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="cmc.modules.cryptocurrency.ranking.Ranking.get_data"><code class="name">var <span class="ident">get_data</span> : Dict[int, Dict[int, Dict[str, Any]]]</code></dt>
+<dt id="cmc.modules.exchange.derivatives.Derivatives.get_data"><code class="name">var <span class="ident">get_data</span> : Dict[int, Dict[str, Any]]</code></dt>
 <dd>
-<div class="desc"><p>Get a dictionary of cryptocurrency ranks with page number as keys
-and rankings as values.</p>
+<div class="desc"><p>Scrape exchanges names and ranks from data returned by
+__get_page_data() method.</p>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict[int, Dict[int, Dict[str, Any]]]</code></dt>
-<dd>Cryptocurrency rankings of all pages.</dd>
+<dt><code>Dict[int, Dict[str, Any]]</code></dt>
+<dd>Exchange platform rankings.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def get_data(self) -&gt; Dict[int, Dict[int, Dict[str, Any]]]:
-    &#34;&#34;&#34;Get a dictionary of cryptocurrency ranks with page number as keys
-    and rankings as values.
+def get_data(self) -&gt; Dict[int, Dict[str, Any]]:
+    &#34;&#34;&#34;Scrape exchanges names and ranks from data returned by
+    __get_page_data() method.
 
     Returns:
-        Dict[int, Dict[int, Dict[str, Any]]]: Cryptocurrency rankings of all pages.
+        Dict[int, Dict[str, Any]]: Exchange platform rankings.
     &#34;&#34;&#34;
-    ranks: Dict[int, Dict[int, Dict[str, Any]]] = {}
-    for page in self.pages:
-        start_rank = (page - 1) * 100
-        page_data = self.__get_page_data(page)
-        ranks[page] = self.__get_cryptocurrency_ranks(page_data, start_rank)
-        start_rank += len(ranks[page])
-        time.sleep(self.ratelimit)
-    return ranks</code></pre>
+    derivatives: Dict[int, Dict[str, Any]] = {}
+    page_data = self.__get_page_data
+    data = page_data.find_all(&#34;tr&#34;)
+    for rank, content in enumerate(data):
+        td = content.find_all(&#34;td&#34;)[1]
+        try:
+            name: str = td.find(&#34;p&#34;, class_=&#34;sc-1eb5slv-0 iworPT&#34;).text
+        except:
+            name: str = td.text  # type: ignore
+        cmc_link: str = td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;)[&#34;href&#34;]
+        derivatives[rank + 1] = {
+            &#34;name&#34;: name,
+            &#34;cmc_link&#34;: cmc_link,
+            &#34;cmc_name&#34;: cmc_link.split(&#34;/&#34;)[-1].split(&#34;?&#34;)[0],
+            &#34;url&#34;: self.cmc_url + cmc_link,
+            &#34;timestamp&#34;: datetime.now(),
+        }
+    return derivatives</code></pre>
 </details>
 </dd>
 </dl>
@@ -327,15 +256,15 @@ def get_data(self) -&gt; Dict[int, Dict[int, Dict[str, Any]]]:
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="cmc.modules.cryptocurrency" href="index.html">cmc.modules.cryptocurrency</a></code></li>
+<li><code><a title="cmc.modules.exchange" href="index.html">cmc.modules.exchange</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="cmc.modules.cryptocurrency.ranking.Ranking" href="#cmc.modules.cryptocurrency.ranking.Ranking">Ranking</a></code></h4>
+<h4><code><a title="cmc.modules.exchange.derivatives.Derivatives" href="#cmc.modules.exchange.derivatives.Derivatives">Derivatives</a></code></h4>
 <ul class="">
-<li><code><a title="cmc.modules.cryptocurrency.ranking.Ranking.get_data" href="#cmc.modules.cryptocurrency.ranking.Ranking.get_data">get_data</a></code></li>
+<li><code><a title="cmc.modules.exchange.derivatives.Derivatives.get_data" href="#cmc.modules.exchange.derivatives.Derivatives.get_data">get_data</a></code></li>
 </ul>
 </li>
 </ul>

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Module for fetching spot exchange rankings from CoinMarketCap
+"""Module for fetching derivative exchange rankings from CoinMarketCap
 website."""
 
 from datetime import datetime
@@ -14,8 +14,8 @@ from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
 
 
-class Spot(CMCBaseClass):
-    """Class for scraping the data of top spot exchanges."""
+class Derivatives(CMCBaseClass):
+    """Class for scraping the data of top derivative exchanges."""
 
     def __init__(self, proxy: Optional[str] = None) -> None:
         """
@@ -23,11 +23,11 @@ class Spot(CMCBaseClass):
             proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
         """
         super().__init__(proxy)
-        self.base_url = "https://coinmarketcap.com/rankings/exchanges/"
+        self.base_url = "https://coinmarketcap.com/rankings/exchanges/derivatives/"
 
     @property
     def __get_page_data(self) -> bs4.BeautifulSoup:
-        """Scrape the table from top spot exchanges page data
+        """Scrape the table from top derivative exchanges page data
         and return the scraped data.
 
         Returns:
@@ -58,7 +58,7 @@ class Spot(CMCBaseClass):
         Returns:
             Dict[int, Dict[str, Any]]: Exchange platform rankings.
         """
-        spot: Dict[int, Dict[str, Any]] = {}
+        derivatives: Dict[int, Dict[str, Any]] = {}
         page_data = self.__get_page_data
         data = page_data.find_all("tr")
         for rank, content in enumerate(data):
@@ -68,11 +68,11 @@ class Spot(CMCBaseClass):
             except:
                 name: str = td.text  # type: ignore
             cmc_link: str = td.find("a", class_="cmc-link")["href"]
-            spot[rank + 1] = {
+            derivatives[rank + 1] = {
                 "name": name,
                 "cmc_link": cmc_link,
-                "cmc_name": cmc_link.split("/")[-2],
+                "cmc_name": cmc_link.split("/")[-1].split("?")[0],
                 "url": self.cmc_url + cmc_link,
                 "timestamp": datetime.now(),
             }
-        return spot
+        return derivatives

@@ -34,7 +34,6 @@ website.</p>
 &#34;&#34;&#34;Module for fetching spot exchange rankings from CoinMarketCap
 website.&#34;&#34;&#34;
 
-import json
 from datetime import datetime
 import os
 import time
@@ -71,7 +70,6 @@ class Spot(CMCBaseClass):
             service_log_path=os.devnull,
         )
         driver.get(self.base_url)
-        time.sleep(1)
         driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
         time.sleep(1)
         result = driver.find_element(
@@ -106,6 +104,7 @@ class Spot(CMCBaseClass):
                 &#34;cmc_link&#34;: cmc_link,
                 &#34;cmc_name&#34;: cmc_link.split(&#34;/&#34;)[-2],
                 &#34;url&#34;: self.cmc_url + cmc_link,
+                &#34;timestamp&#34;: datetime.now(),
             }
         return spot</code></pre>
 </details>
@@ -159,7 +158,6 @@ class Spot(CMCBaseClass):
             service_log_path=os.devnull,
         )
         driver.get(self.base_url)
-        time.sleep(1)
         driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
         time.sleep(1)
         result = driver.find_element(
@@ -194,6 +192,7 @@ class Spot(CMCBaseClass):
                 &#34;cmc_link&#34;: cmc_link,
                 &#34;cmc_name&#34;: cmc_link.split(&#34;/&#34;)[-2],
                 &#34;url&#34;: self.cmc_url + cmc_link,
+                &#34;timestamp&#34;: datetime.now(),
             }
         return spot</code></pre>
 </details>
@@ -239,6 +238,7 @@ def get_data(self) -&gt; Dict[int, Dict[str, Any]]:
             &#34;cmc_link&#34;: cmc_link,
             &#34;cmc_name&#34;: cmc_link.split(&#34;/&#34;)[-2],
             &#34;url&#34;: self.cmc_url + cmc_link,
+            &#34;timestamp&#34;: datetime.now(),
         }
     return spot</code></pre>
 </details>

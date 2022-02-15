@@ -3,6 +3,7 @@
 """Module for fetching CryptoCurrency rankings from CoinMarketCap
 website."""
 
+from datetime import datetime
 import os
 import time
 from typing import Any, Dict, List, Optional
@@ -33,15 +34,14 @@ class Ranking(CMCBaseClass):
         self.pages = pages
 
     @property
-    def get_data(self) -> Dict[int, Dict[int, Dict[str, str]]]:
+    def get_data(self) -> Dict[int, Dict[int, Dict[str, Any]]]:
         """Get a dictionary of cryptocurrency ranks with page number as keys
         and rankings as values.
 
         Returns:
-            Dict[int, Dict[int, Dict[str, str]]]: Cryptocurrency rankings
-            of all pages.
+            Dict[int, Dict[int, Dict[str, Any]]]: Cryptocurrency rankings of all pages.
         """
-        ranks: Dict[int, Dict[int, Dict[str, str]]] = {}
+        ranks: Dict[int, Dict[int, Dict[str, Any]]] = {}
         for page in self.pages:
             start_rank = (page - 1) * 100
             page_data = self.__get_page_data(page)
@@ -78,7 +78,7 @@ class Ranking(CMCBaseClass):
 
     def __get_cryptocurrency_ranks(
         self, page_data: bs4.element.Tag, start_rank: int
-    ) -> Dict[int, Dict[str, str]]:
+    ) -> Dict[int, Dict[str, Any]]:
         """Scrape cryptocurrency names and ranks from data returned by
         the __get_page_data() method.
 
@@ -87,10 +87,9 @@ class Ranking(CMCBaseClass):
             start_rank (int): Rank to start storing from.
 
         Returns:
-            Dict[int, Dict[str, Dict[str, str]]]: Cryptocurrency rankings of
-            the current page.
+            Dict[int, Dict[str, Dict[str, Any]]]: Cryptocurrency rankings of the current page.
         """
-        cryptocurrency_ranking: Dict[int, Dict[str, str]] = {}
+        cryptocurrency_ranking: Dict[int, Dict[str, Any]] = {}
         data = page_data.find_all("tr")
         for rank, content in enumerate(data):
             td = content.find_all("td")[2]
@@ -112,5 +111,6 @@ class Ranking(CMCBaseClass):
                 "symbol": symbol,
                 "cmc_name": cmc_link.split("/")[-2],
                 "url": self.cmc_url + cmc_link,
+                "timestamp": datetime.now(),
             }
         return cryptocurrency_ranking

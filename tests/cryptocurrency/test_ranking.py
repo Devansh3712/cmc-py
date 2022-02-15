@@ -9,4 +9,4 @@ def test_get_data() -> None:
     index = random.randint(1, len(result[1]))
     assert len(result) == 1
     assert len(result[1]) == 100
-    assert len(result[1][index]) == 4
+    assert len(result[1][index]) == 5

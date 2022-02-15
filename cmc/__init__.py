@@ -7,3 +7,4 @@ from cmc.modules.cryptocurrency.recently_added import RecentlyAdded
 from cmc.modules.cryptocurrency.trending import Trending
 
 from cmc.modules.exchange.spot import Spot
+from cmc.modules.exchange.derivatives import Derivatives
