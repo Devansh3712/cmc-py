@@ -71,8 +71,8 @@ class CMCBaseClass:
         Returns:
             str: Fetched proxy from the API.
         """
-        result = self.session.get(self.__proxy_url_1).json()
         try:
+            result = self.session.get(self.__proxy_url_1).json()
             proxy = result["host"] + ":" + str(result["port"])
             time.sleep(1.5)
             return proxy

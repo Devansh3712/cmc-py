@@ -3,6 +3,20 @@
 """Module for storing custom exceptions for py-cmc modules."""
 
 
+class InvalidPageURL(Exception):
+    """Raised when the webpage is not found on CoinMarketCap website."""
+
+    def __init__(self, url: str) -> None:
+        """
+        Args:
+            url (str): Link of the webpage.
+        """
+        self.url = url
+
+    def __str__(self) -> str:
+        return f"{self.url} is not a valid webpage."
+
+
 class InvalidCryptoCurrencyURL(Exception):
     """Raised when the cryptocurrency webpage is not found on
     CoinMarketCap website."""

@@ -32,6 +32,20 @@
 &#34;&#34;&#34;Module for storing custom exceptions for py-cmc modules.&#34;&#34;&#34;
 
 
+class InvalidPageURL(Exception):
+    &#34;&#34;&#34;Raised when the webpage is not found on CoinMarketCap website.&#34;&#34;&#34;
+
+    def __init__(self, url: str) -&gt; None:
+        &#34;&#34;&#34;
+        Args:
+            url (str): Link of the webpage.
+        &#34;&#34;&#34;
+        self.url = url
+
+    def __str__(self) -&gt; str:
+        return f&#34;{self.url} is not a valid webpage.&#34;
+
+
 class InvalidCryptoCurrencyURL(Exception):
     &#34;&#34;&#34;Raised when the cryptocurrency webpage is not found on
     CoinMarketCap website.&#34;&#34;&#34;
@@ -166,6 +180,40 @@ CoinMarketCap website.</p>
 <li>builtins.BaseException</li>
 </ul>
 </dd>
+<dt id="cmc.utils.exceptions.InvalidPageURL"><code class="flex name class">
+<span>class <span class="ident">InvalidPageURL</span></span>
+<span>(</span><span>url: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raised when the webpage is not found on CoinMarketCap website.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>url</code></strong> :&ensp;<code>str</code></dt>
+<dd>Link of the webpage.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class InvalidPageURL(Exception):
+    &#34;&#34;&#34;Raised when the webpage is not found on CoinMarketCap website.&#34;&#34;&#34;
+
+    def __init__(self, url: str) -&gt; None:
+        &#34;&#34;&#34;
+        Args:
+            url (str): Link of the webpage.
+        &#34;&#34;&#34;
+        self.url = url
+
+    def __str__(self) -&gt; str:
+        return f&#34;{self.url} is not a valid webpage.&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
 <dt id="cmc.utils.exceptions.InvalidProxy"><code class="flex name class">
 <span>class <span class="ident">InvalidProxy</span></span>
 <span>(</span><span>proxy: str)</span>
@@ -245,6 +293,9 @@ CoinMarketCap website.</p>
 </li>
 <li>
 <h4><code><a title="cmc.utils.exceptions.InvalidExchangeURL" href="#cmc.utils.exceptions.InvalidExchangeURL">InvalidExchangeURL</a></code></h4>
+</li>
+<li>
+<h4><code><a title="cmc.utils.exceptions.InvalidPageURL" href="#cmc.utils.exceptions.InvalidPageURL">InvalidPageURL</a></code></h4>
 </li>
 <li>
 <h4><code><a title="cmc.utils.exceptions.InvalidProxy" href="#cmc.utils.exceptions.InvalidProxy">InvalidProxy</a></code></h4>

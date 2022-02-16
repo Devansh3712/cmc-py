@@ -1,5 +1,6 @@
 import random
 import time
+import pytest
 from cmc import Ranking
 
 
@@ -10,3 +11,9 @@ def test_get_data() -> None:
     assert len(result) == 1
     assert len(result[1]) == 100
     assert len(result[1][index]) == 5
+
+
+@pytest.mark.parametrize("page", [95, 100])
+def test_invalid_url(page: int) -> None:
+    with pytest.raises(Exception) as error:
+        result = Ranking([page]).get_data

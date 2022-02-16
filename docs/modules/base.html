@@ -105,8 +105,8 @@ class CMCBaseClass:
         Returns:
             str: Fetched proxy from the API.
         &#34;&#34;&#34;
-        result = self.session.get(self.__proxy_url_1).json()
         try:
+            result = self.session.get(self.__proxy_url_1).json()
             proxy = result[&#34;host&#34;] + &#34;:&#34; + str(result[&#34;port&#34;])
             time.sleep(1.5)
             return proxy
@@ -223,8 +223,8 @@ time the class is called.</p>
         Returns:
             str: Fetched proxy from the API.
         &#34;&#34;&#34;
-        result = self.session.get(self.__proxy_url_1).json()
         try:
+            result = self.session.get(self.__proxy_url_1).json()
             proxy = result[&#34;host&#34;] + &#34;:&#34; + str(result[&#34;port&#34;])
             time.sleep(1.5)
             return proxy
@@ -281,6 +281,7 @@ time the class is called.</p>
 <li><a title="cmc.modules.exchange.exchange.Exchange" href="exchange/exchange.html#cmc.modules.exchange.exchange.Exchange">Exchange</a></li>
 <li><a title="cmc.modules.exchange.lending.Lending" href="exchange/lending.html#cmc.modules.exchange.lending.Lending">Lending</a></li>
 <li><a title="cmc.modules.exchange.spot.Spot" href="exchange/spot.html#cmc.modules.exchange.spot.Spot">Spot</a></li>
+<li><a title="cmc.modules.nft.collection.NFTRanking" href="nft/collection.html#cmc.modules.nft.collection.NFTRanking">NFTRanking</a></li>
 </ul>
 </dd>
 </dl>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>cmc.modules.nft.collection API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Module for fetching NFT collection rankings from CoinMarketCap website." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,6 +22,112 @@
 <h1 class="title">Module <code>cmc.modules.nft.collection</code></h1>
 </header>
 <section id="section-intro">
+<p>Module for fetching NFT collection rankings from CoinMarketCap website.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#!/usr/bin/env python
+
+&#34;&#34;&#34;Module for fetching NFT collection rankings from CoinMarketCap website.&#34;&#34;&#34;
+
+from datetime import datetime
+import os
+import time
+from typing import Any, Dict, List, Optional
+import bs4
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from cmc.modules.base import CMCBaseClass
+from cmc.utils.exceptions import InvalidPageURL
+
+
+class NFTRanking(CMCBaseClass):
+    def __init__(
+        self, pages: List[int] = [1], ratelimit: int = 2, proxy: Optional[str] = None
+    ) -&gt; None:
+        &#34;&#34;&#34;
+        Args:
+            pages (List[int], optional): Pages to scrape data from. Defaults to [1].
+            ratelimit (int, optional): Ratelimit for parsing each page. Defaults to 2 seconds.
+            proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
+        &#34;&#34;&#34;
+        super().__init__(proxy)
+        self.base_url = &#34;https://coinmarketcap.com/nft/collections/?page=&#34;
+        self.ratelimit = ratelimit
+        self.pages = pages
+
+    @property
+    def get_data(self) -&gt; Dict[int, Dict[int, Dict[str, Any]]]:
+        &#34;&#34;&#34;Get a dictionary of NFT collection ranks with page number as keys
+        and rankings as values.
+
+        Returns:
+            Dict[int, Dict[int, Dict[str, Any]]]: NFT collection rankings of all pages.
+        &#34;&#34;&#34;
+        ranks: Dict[int, Dict[int, Dict[str, Any]]] = {}
+        for page in self.pages:
+            start_rank = (page - 1) * 100
+            page_data = self.__get_page_data(page)
+            ranks[page] = self.__get_nft_ranks(page_data, start_rank)
+            start_rank += len(ranks[page])
+            time.sleep(self.ratelimit)
+        return ranks
+
+    def __get_page_data(self, page: int) -&gt; bs4.BeautifulSoup:
+        &#34;&#34;&#34;Scrape a single ranking page from CoinMarketCap.
+        Uses selenium to load javascript elements of the website.
+
+        Args:
+            page (int): Page to scrape.
+
+        Returns:
+            bs4.BeautifulSoup: Scraped website data.
+        &#34;&#34;&#34;
+        driver = webdriver.Chrome(
+            service=self.service,
+            options=self.driver_options,
+            service_log_path=os.devnull,
+        )
+        driver.get(self.base_url + str(page))
+        driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
+        time.sleep(1)
+        result = driver.find_element(
+            By.XPATH, &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[3]/table/tbody&#39;
+        )
+        page_data = result.get_attribute(&#34;innerHTML&#34;)
+        driver.quit()
+        soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
+        return soup
+
+    def __get_nft_ranks(
+        self, page_data: bs4.element.Tag, start_rank: int
+    ) -&gt; Dict[int, Dict[str, Any]]:
+        &#34;&#34;&#34;Scrape cryptocurrency names and ranks from data returned by
+        the __get_page_data() method.
+
+        Args:
+            page_data (bs4.element.Tag): Scraped page data.
+            start_rank (int): Rank to start storing from.
+
+        Returns:
+            Dict[int, Dict[str, Dict[str, Any]]]: NFT collection rankings of the current page.
+        &#34;&#34;&#34;
+        nft_ranking: Dict[int, Dict[str, Any]] = {}
+        data = page_data.find_all(&#34;tr&#34;)
+        for rank, content in enumerate(data):
+            td = content.find_all(&#34;td&#34;)
+            try:
+                name: str = td[2].find_all(&#34;span&#34;)[1].text
+            except:
+                name: str = td[1].find(&#34;span&#34;).text  # type: ignore
+            nft_ranking[start_rank + rank + 1] = {
+                &#34;name&#34;: name,
+                &#34;timestamp&#34;: datetime.now(),
+            }
+        return nft_ranking</code></pre>
+</details>
 </section>
 <section>
 </section>
@@ -30,6 +136,154 @@
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="cmc.modules.nft.collection.NFTRanking"><code class="flex name class">
+<span>class <span class="ident">NFTRanking</span></span>
+<span>(</span><span>pages: List[int] = [1], ratelimit: int = 2, proxy: Optional[str] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class for basic Selenium and requests settings for py-cmc
+modules. Sets up a random User-Agent and a random proxy each
+time the class is called.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>pages</code></strong> :&ensp;<code>List[int]</code>, optional</dt>
+<dd>Pages to scrape data from. Defaults to [1].</dd>
+<dt><strong><code>ratelimit</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Ratelimit for parsing each page. Defaults to 2 seconds.</dd>
+<dt><strong><code>proxy</code></strong> :&ensp;<code>Optional[str]</code>, optional</dt>
+<dd>Proxy to be used for Selenium and requests Session. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NFTRanking(CMCBaseClass):
+    def __init__(
+        self, pages: List[int] = [1], ratelimit: int = 2, proxy: Optional[str] = None
+    ) -&gt; None:
+        &#34;&#34;&#34;
+        Args:
+            pages (List[int], optional): Pages to scrape data from. Defaults to [1].
+            ratelimit (int, optional): Ratelimit for parsing each page. Defaults to 2 seconds.
+            proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
+        &#34;&#34;&#34;
+        super().__init__(proxy)
+        self.base_url = &#34;https://coinmarketcap.com/nft/collections/?page=&#34;
+        self.ratelimit = ratelimit
+        self.pages = pages
+
+    @property
+    def get_data(self) -&gt; Dict[int, Dict[int, Dict[str, Any]]]:
+        &#34;&#34;&#34;Get a dictionary of NFT collection ranks with page number as keys
+        and rankings as values.
+
+        Returns:
+            Dict[int, Dict[int, Dict[str, Any]]]: NFT collection rankings of all pages.
+        &#34;&#34;&#34;
+        ranks: Dict[int, Dict[int, Dict[str, Any]]] = {}
+        for page in self.pages:
+            start_rank = (page - 1) * 100
+            page_data = self.__get_page_data(page)
+            ranks[page] = self.__get_nft_ranks(page_data, start_rank)
+            start_rank += len(ranks[page])
+            time.sleep(self.ratelimit)
+        return ranks
+
+    def __get_page_data(self, page: int) -&gt; bs4.BeautifulSoup:
+        &#34;&#34;&#34;Scrape a single ranking page from CoinMarketCap.
+        Uses selenium to load javascript elements of the website.
+
+        Args:
+            page (int): Page to scrape.
+
+        Returns:
+            bs4.BeautifulSoup: Scraped website data.
+        &#34;&#34;&#34;
+        driver = webdriver.Chrome(
+            service=self.service,
+            options=self.driver_options,
+            service_log_path=os.devnull,
+        )
+        driver.get(self.base_url + str(page))
+        driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
+        time.sleep(1)
+        result = driver.find_element(
+            By.XPATH, &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[3]/table/tbody&#39;
+        )
+        page_data = result.get_attribute(&#34;innerHTML&#34;)
+        driver.quit()
+        soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
+        return soup
+
+    def __get_nft_ranks(
+        self, page_data: bs4.element.Tag, start_rank: int
+    ) -&gt; Dict[int, Dict[str, Any]]:
+        &#34;&#34;&#34;Scrape cryptocurrency names and ranks from data returned by
+        the __get_page_data() method.
+
+        Args:
+            page_data (bs4.element.Tag): Scraped page data.
+            start_rank (int): Rank to start storing from.
+
+        Returns:
+            Dict[int, Dict[str, Dict[str, Any]]]: NFT collection rankings of the current page.
+        &#34;&#34;&#34;
+        nft_ranking: Dict[int, Dict[str, Any]] = {}
+        data = page_data.find_all(&#34;tr&#34;)
+        for rank, content in enumerate(data):
+            td = content.find_all(&#34;td&#34;)
+            try:
+                name: str = td[2].find_all(&#34;span&#34;)[1].text
+            except:
+                name: str = td[1].find(&#34;span&#34;).text  # type: ignore
+            nft_ranking[start_rank + rank + 1] = {
+                &#34;name&#34;: name,
+                &#34;timestamp&#34;: datetime.now(),
+            }
+        return nft_ranking</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="cmc.modules.base.CMCBaseClass" href="../base.html#cmc.modules.base.CMCBaseClass">CMCBaseClass</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="cmc.modules.nft.collection.NFTRanking.get_data"><code class="name">var <span class="ident">get_data</span> : Dict[int, Dict[int, Dict[str, Any]]]</code></dt>
+<dd>
+<div class="desc"><p>Get a dictionary of NFT collection ranks with page number as keys
+and rankings as values.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict[int, Dict[int, Dict[str, Any]]]</code></dt>
+<dd>NFT collection rankings of all pages.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def get_data(self) -&gt; Dict[int, Dict[int, Dict[str, Any]]]:
+    &#34;&#34;&#34;Get a dictionary of NFT collection ranks with page number as keys
+    and rankings as values.
+
+    Returns:
+        Dict[int, Dict[int, Dict[str, Any]]]: NFT collection rankings of all pages.
+    &#34;&#34;&#34;
+    ranks: Dict[int, Dict[int, Dict[str, Any]]] = {}
+    for page in self.pages:
+        start_rank = (page - 1) * 100
+        page_data = self.__get_page_data(page)
+        ranks[page] = self.__get_nft_ranks(page_data, start_rank)
+        start_rank += len(ranks[page])
+        time.sleep(self.ratelimit)
+    return ranks</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -41,6 +295,16 @@
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="cmc.modules.nft" href="index.html">cmc.modules.nft</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="cmc.modules.nft.collection.NFTRanking" href="#cmc.modules.nft.collection.NFTRanking">NFTRanking</a></code></h4>
+<ul class="">
+<li><code><a title="cmc.modules.nft.collection.NFTRanking.get_data" href="#cmc.modules.nft.collection.NFTRanking.get_data">get_data</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

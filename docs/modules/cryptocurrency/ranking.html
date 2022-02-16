@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>cmc.modules.cryptocurrency.ranking API documentation</title>
-<meta name="description" content="Module for fetching CryptoCurrency rankings from CoinMarketCap
-website." />
+<meta name="description" content="Module for fetching CryptoCurrency rankings from CoinMarketCap website." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -23,16 +22,14 @@ website." />
 <h1 class="title">Module <code>cmc.modules.cryptocurrency.ranking</code></h1>
 </header>
 <section id="section-intro">
-<p>Module for fetching CryptoCurrency rankings from CoinMarketCap
-website.</p>
+<p>Module for fetching CryptoCurrency rankings from CoinMarketCap website.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">#!/usr/bin/env python
 
-&#34;&#34;&#34;Module for fetching CryptoCurrency rankings from CoinMarketCap
-website.&#34;&#34;&#34;
+&#34;&#34;&#34;Module for fetching CryptoCurrency rankings from CoinMarketCap website.&#34;&#34;&#34;
 
 from datetime import datetime
 import os
@@ -43,6 +40,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
+from cmc.utils.exceptions import InvalidPageURL
 
 
 class Ranking(CMCBaseClass):
@@ -81,12 +79,30 @@ class Ranking(CMCBaseClass):
             time.sleep(self.ratelimit)
         return ranks
 
+    def __check_cryptocurrency_url(self, page_data: str) -&gt; bool:
+        &#34;&#34;&#34;Check whether a webpage exists or not.
+
+        Args:
+            page_data (str): Scraped page data of the CryptoCurrency.
+
+        Returns:
+            bool: True if page exists else False.
+        &#34;&#34;&#34;
+        soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
+        error_message = soup.find_all(&#34;p&#34;, class_=&#34;sc-1eb5slv-0 liZSnj&#34;)
+        if error_message == []:
+            return True
+        return False
+
     def __get_page_data(self, page: int) -&gt; bs4.BeautifulSoup:
         &#34;&#34;&#34;Scrape a single ranking page from CoinMarketCap.
         Uses selenium to load javascript elements of the website.
 
         Args:
             page (int): Page to scrape.
+
+        Raises:
+            InvalidPageURL: Raised when the URL is not valid.
 
         Returns:
             bs4.BeautifulSoup: Scraped website data.
@@ -104,6 +120,8 @@ class Ranking(CMCBaseClass):
         )
         page_data = result.get_attribute(&#34;innerHTML&#34;)
         driver.quit()
+        if not self.__check_cryptocurrency_url(page_data):
+            raise InvalidPageURL(self.base_url + str(page))
         soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
         return soup
 
@@ -212,12 +230,30 @@ contains &lt;= 100 cryptocurrencies.</p>
             time.sleep(self.ratelimit)
         return ranks
 
+    def __check_cryptocurrency_url(self, page_data: str) -&gt; bool:
+        &#34;&#34;&#34;Check whether a webpage exists or not.
+
+        Args:
+            page_data (str): Scraped page data of the CryptoCurrency.
+
+        Returns:
+            bool: True if page exists else False.
+        &#34;&#34;&#34;
+        soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
+        error_message = soup.find_all(&#34;p&#34;, class_=&#34;sc-1eb5slv-0 liZSnj&#34;)
+        if error_message == []:
+            return True
+        return False
+
     def __get_page_data(self, page: int) -&gt; bs4.BeautifulSoup:
         &#34;&#34;&#34;Scrape a single ranking page from CoinMarketCap.
         Uses selenium to load javascript elements of the website.
 
         Args:
             page (int): Page to scrape.
+
+        Raises:
+            InvalidPageURL: Raised when the URL is not valid.
 
         Returns:
             bs4.BeautifulSoup: Scraped website data.
@@ -235,6 +271,8 @@ contains &lt;= 100 cryptocurrencies.</p>
         )
         page_data = result.get_attribute(&#34;innerHTML&#34;)
         driver.quit()
+        if not self.__check_cryptocurrency_url(page_data):
+            raise InvalidPageURL(self.base_url + str(page))
         soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
         return soup
 

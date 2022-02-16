@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-"""Module for fetching CryptoCurrency rankings from CoinMarketCap
-website."""
+"""Module for fetching CryptoCurrency rankings from CoinMarketCap website."""
 
 from datetime import datetime
 import os
@@ -12,6 +11,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
+from cmc.utils.exceptions import InvalidPageURL
 
 
 class Ranking(CMCBaseClass):
@@ -50,12 +50,30 @@ class Ranking(CMCBaseClass):
             time.sleep(self.ratelimit)
         return ranks
 
+    def __check_cryptocurrency_url(self, page_data: str) -> bool:
+        """Check whether a webpage exists or not.
+
+        Args:
+            page_data (str): Scraped page data of the CryptoCurrency.
+
+        Returns:
+            bool: True if page exists else False.
+        """
+        soup = BeautifulSoup(page_data, features="lxml")
+        error_message = soup.find_all("p", class_="sc-1eb5slv-0 liZSnj")
+        if error_message == []:
+            return True
+        return False
+
     def __get_page_data(self, page: int) -> bs4.BeautifulSoup:
         """Scrape a single ranking page from CoinMarketCap.
         Uses selenium to load javascript elements of the website.
 
         Args:
             page (int): Page to scrape.
+
+        Raises:
+            InvalidPageURL: Raised when the URL is not valid.
 
         Returns:
             bs4.BeautifulSoup: Scraped website data.
@@ -73,6 +91,8 @@ class Ranking(CMCBaseClass):
         )
         page_data = result.get_attribute("innerHTML")
         driver.quit()
+        if not self.__check_cryptocurrency_url(page_data):
+            raise InvalidPageURL(self.base_url + str(page))
         soup = BeautifulSoup(page_data, features="lxml")
         return soup
 
