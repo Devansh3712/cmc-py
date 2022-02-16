@@ -13,3 +13,4 @@ from cmc.modules.exchange.lending import Lending
 from cmc.modules.exchange.spot import Spot
 
 from cmc.modules.nft.collection import NFTRanking
+from cmc.modules.nft.upcoming import UpcomingSale

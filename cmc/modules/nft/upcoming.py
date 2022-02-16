@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Module for fetching NFT collection rankings from CoinMarketCap website."""
+"""Module for fetching upcoming NFT collection from CoinMarketCap website."""
 
 from datetime import datetime
 import os
@@ -11,12 +11,11 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
-from cmc.utils.exceptions import InvalidPageURL
 
 
-class NFTRanking(CMCBaseClass):
-    """Class for scraping NFT collection rankings. Each page
-    contains <= 100 NFT collections.
+class UpcomingSale(CMCBaseClass):
+    """Class for scraping upcoming NFT collection. Each page
+    contains <= 20 NFT collections.
     """
 
     def __init__(
@@ -29,7 +28,7 @@ class NFTRanking(CMCBaseClass):
             proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
         """
         super().__init__(proxy)
-        self.base_url = "https://coinmarketcap.com/nft/collections/?page="
+        self.base_url = "https://coinmarketcap.com/nft/upcoming/?page="
         self.ratelimit = ratelimit
         self.pages = pages
 
@@ -41,14 +40,14 @@ class NFTRanking(CMCBaseClass):
         Returns:
             Dict[int, Dict[int, Dict[str, Any]]]: NFT collection rankings of all pages.
         """
-        ranks: Dict[int, Dict[int, Dict[str, Any]]] = {}
+        data: Dict[int, Dict[int, Dict[str, Any]]] = {}
         for page in self.pages:
-            start_rank = (page - 1) * 100
+            start_rank = (page - 1) * 20
             page_data = self.__get_page_data(page)
-            ranks[page] = self.__get_nft_ranks(page_data, start_rank)
-            start_rank += len(ranks[page])
+            data[page] = self.__get_nft_data(page_data, start_rank)
+            start_rank += len(data[page])
             time.sleep(self.ratelimit)
-        return ranks
+        return data
 
     def __get_page_data(self, page: int) -> bs4.BeautifulSoup:
         """Scrape a single ranking page from CoinMarketCap.
@@ -69,36 +68,56 @@ class NFTRanking(CMCBaseClass):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
         time.sleep(1)
         result = driver.find_element(
-            By.XPATH, '//*[@id="__next"]/div/div[1]/div[2]/div/div/div[3]/table/tbody'
+            By.XPATH,
+            '//*[@id="__next"]/div/div[1]/div[2]/div/div[2]/div[1]/div/table/tbody',
         )
         page_data = result.get_attribute("innerHTML")
         driver.quit()
         soup = BeautifulSoup(page_data, features="lxml")
         return soup
 
-    def __get_nft_ranks(
+    def __get_nft_data(
         self, page_data: bs4.element.Tag, start_rank: int
     ) -> Dict[int, Dict[str, Any]]:
-        """Scrape cryptocurrency names and ranks from data returned by
-        the __get_page_data() method.
+        """Scrape upcoming NFTs data from data returned by the
+        __get_page_data() method.
 
         Args:
             page_data (bs4.element.Tag): Scraped page data.
             start_rank (int): Rank to start storing from.
 
         Returns:
-            Dict[int, Dict[str, Dict[str, Any]]]: NFT collection rankings of the current page.
+            Dict[int, Dict[str, Dict[str, Any]]]: Upcoming NFT collection on the current page.
         """
-        nft_ranking: Dict[int, Dict[str, Any]] = {}
+        nft_data: Dict[int, Dict[str, Any]] = {}
         data = page_data.find_all("tr")
         for rank, content in enumerate(data):
             td = content.find_all("td")
+            name: str = td[0].find("div", class_="sc-15yqupo-0 cqAZPF").p.span.text
+            blockchain: str = td[0].find("span", class_="lsid7u-0 kciUBo").text
+            info: str = (
+                td[0].find("div", class_="sc-15yqupo-0 cqAZPF").find_all("p")[1].text
+            )
+            discord: str = td[1].find_all("p")[0].a["href"]
+            twitter: str = td[1].find_all("p")[1].a["href"]
+            website: str = td[1].find_all("p")[2].a["href"]
+            sale_on: str = td[2].find_all("p")[1].text
             try:
-                name: str = td[2].find_all("span")[1].text
+                pre_sale: Optional[str] = td[2].find_all("span")[0].text
+                sale: str = td[3].find_all("span")[1].text
             except:
-                name: str = td[1].find("span").text  # type: ignore
-            nft_ranking[start_rank + rank + 1] = {
+                pre_sale: Optional[str] = None  # type: ignore
+                sale: str = td[3].find("span").text  # type: ignore
+            nft_data[start_rank + rank + 1] = {
                 "name": name,
+                "blockchain": blockchain,
+                "info": info,
+                "discord": discord,
+                "twitter": twitter,
+                "website": website,
+                "sale_on": sale_on,
+                "pre_sale": pre_sale,
+                "sale": sale,
                 "timestamp": datetime.now(),
             }
-        return nft_ranking
+        return nft_data

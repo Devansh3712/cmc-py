@@ -18,7 +18,6 @@ import requests
 from requests.structures import CaseInsensitiveDict
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 from webdriver_manager.chrome import ChromeDriverManager
 from cmc.utils.exceptions import ProxyTimeOut, InvalidProxy
