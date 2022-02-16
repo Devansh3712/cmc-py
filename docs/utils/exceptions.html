@@ -47,6 +47,21 @@ class InvalidCryptoCurrencyURL(Exception):
         return f&#34;{self.cryptocurrency} is not a valid webpage.&#34;
 
 
+class InvalidExchangeURL(Exception):
+    &#34;&#34;&#34;Raised when the exchange webpage is not found on
+    CoinMarketCap website.&#34;&#34;&#34;
+
+    def __init__(self, exchange: str) -&gt; None:
+        &#34;&#34;&#34;
+        Args:
+            exchange (str): Link of the exchange webpage.
+        &#34;&#34;&#34;
+        self.exchange = exchange
+
+    def __str__(self) -&gt; str:
+        return f&#34;{self.exchange} is not a valid webpage.&#34;
+
+
 class ProxyTimeOut(Exception):
     &#34;&#34;&#34;Raised when a proxy cannot be fetched from the API.&#34;&#34;&#34;
 
@@ -108,6 +123,42 @@ CoinMarketCap website.</p>
 
     def __str__(self) -&gt; str:
         return f&#34;{self.cryptocurrency} is not a valid webpage.&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="cmc.utils.exceptions.InvalidExchangeURL"><code class="flex name class">
+<span>class <span class="ident">InvalidExchangeURL</span></span>
+<span>(</span><span>exchange: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raised when the exchange webpage is not found on
+CoinMarketCap website.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>exchange</code></strong> :&ensp;<code>str</code></dt>
+<dd>Link of the exchange webpage.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class InvalidExchangeURL(Exception):
+    &#34;&#34;&#34;Raised when the exchange webpage is not found on
+    CoinMarketCap website.&#34;&#34;&#34;
+
+    def __init__(self, exchange: str) -&gt; None:
+        &#34;&#34;&#34;
+        Args:
+            exchange (str): Link of the exchange webpage.
+        &#34;&#34;&#34;
+        self.exchange = exchange
+
+    def __str__(self) -&gt; str:
+        return f&#34;{self.exchange} is not a valid webpage.&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -191,6 +242,9 @@ CoinMarketCap website.</p>
 <ul>
 <li>
 <h4><code><a title="cmc.utils.exceptions.InvalidCryptoCurrencyURL" href="#cmc.utils.exceptions.InvalidCryptoCurrencyURL">InvalidCryptoCurrencyURL</a></code></h4>
+</li>
+<li>
+<h4><code><a title="cmc.utils.exceptions.InvalidExchangeURL" href="#cmc.utils.exceptions.InvalidExchangeURL">InvalidExchangeURL</a></code></h4>
 </li>
 <li>
 <h4><code><a title="cmc.utils.exceptions.InvalidProxy" href="#cmc.utils.exceptions.InvalidProxy">InvalidProxy</a></code></h4>

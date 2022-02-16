@@ -40,6 +40,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
+from cmc.utils.exceptions import InvalidExchangeURL
 
 
 class Exchange(CMCBaseClass):
@@ -70,12 +71,17 @@ class Exchange(CMCBaseClass):
         page_data = driver.page_source
         driver.quit()
         if not self.__check_cryptocurrency_url(page_data):
-            raise
+            raise InvalidExchangeURL(self.exchange)
         soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
         return soup
 
     @property
     def get_data(self) -&gt; Dict[str, Any]:
+        &#34;&#34;&#34;Scrape the data of a specific Exchange.
+
+        Returns:
+            Dict[str, Any]: Scraped Exchange data.
+        &#34;&#34;&#34;
         page_data = self.__get_page_data
         name: str = page_data.find(&#34;h2&#34;, class_=&#34;sc-1q9q90x-0 sc-1xafy60-3 dzkWnG&#34;).text
         volume_24h: Tuple[str, ...] = (
@@ -164,12 +170,17 @@ time the class is called.</p>
         page_data = driver.page_source
         driver.quit()
         if not self.__check_cryptocurrency_url(page_data):
-            raise
+            raise InvalidExchangeURL(self.exchange)
         soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
         return soup
 
     @property
     def get_data(self) -&gt; Dict[str, Any]:
+        &#34;&#34;&#34;Scrape the data of a specific Exchange.
+
+        Returns:
+            Dict[str, Any]: Scraped Exchange data.
+        &#34;&#34;&#34;
         page_data = self.__get_page_data
         name: str = page_data.find(&#34;h2&#34;, class_=&#34;sc-1q9q90x-0 sc-1xafy60-3 dzkWnG&#34;).text
         volume_24h: Tuple[str, ...] = (
@@ -211,13 +222,23 @@ time the class is called.</p>
 <dl>
 <dt id="cmc.modules.exchange.exchange.Exchange.get_data"><code class="name">var <span class="ident">get_data</span> : Dict[str, Any]</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Scrape the data of a specific Exchange.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict[str, Any]</code></dt>
+<dd>Scraped Exchange data.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
 def get_data(self) -&gt; Dict[str, Any]:
+    &#34;&#34;&#34;Scrape the data of a specific Exchange.
+
+    Returns:
+        Dict[str, Any]: Scraped Exchange data.
+    &#34;&#34;&#34;
     page_data = self.__get_page_data
     name: str = page_data.find(&#34;h2&#34;, class_=&#34;sc-1q9q90x-0 sc-1xafy60-3 dzkWnG&#34;).text
     volume_24h: Tuple[str, ...] = (

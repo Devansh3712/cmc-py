@@ -28,3 +28,9 @@ def test_get_data(exchange: str, data: Dict[str, str]) -> None:
     assert len(result) == 5
     assert result["name"] == data["name"]
     assert result["website"] == data["website"]
+
+
+@pytest.mark.parametrize("exchange", ["biance", "conbase"])
+def test_invalid_url_exception(exchange: str) -> None:
+    with pytest.raises(Exception) as error:
+        result = Exchange(exchange).get_data

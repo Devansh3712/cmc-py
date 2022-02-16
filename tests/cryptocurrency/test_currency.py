@@ -62,3 +62,9 @@ def test_get_data(cryptocurrency: str, data: Dict[str, str]) -> None:
     assert result["symbol"] == data["symbol"]
     assert result["max_supply"] == data["max_supply"]
     assert result["cmc_url"] == data["url"]
+
+
+@pytest.mark.parametrize("cryptocurrency", ["btcoin", "etereum"])
+def test_invalid_url_exception(cryptocurrency: str) -> None:
+    with pytest.raises(Exception) as error:
+        result = CryptoCurrency(cryptocurrency).get_data
