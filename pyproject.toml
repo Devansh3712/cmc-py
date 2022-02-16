@@ -17,6 +17,7 @@ selenium = "^4.1.0"
 webdriver-manager = "^3.5.2"
 pytest = "^7.0.1"
 pdoc3 = "^0.10.0"
+fastapi = {extras = ["all"], version = "^0.73.0"}
 
 [tool.poetry.dev-dependencies]
 
