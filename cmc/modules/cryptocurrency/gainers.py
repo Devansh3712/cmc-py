@@ -69,7 +69,7 @@ class TopGainers(CMCBaseClass):
             symbol: str = (
                 td[1].find("p", class_="sc-1eb5slv-0 gGIpIK coin-item-symbol").text
             )
-            rank: int = int(td[0].find("p", class_="sc-1eb5slv-0 bSDVZJ").text)
+            rank: str = td[0].find("p", class_="sc-1eb5slv-0 bSDVZJ").text
             cmc_link: str = td[1].find("a", class_="cmc-link")["href"]
             price: str = td[2].span.text
             percentage: str = td[3].find("span", class_="sc-15yy2pl-0 kAXKAX").text

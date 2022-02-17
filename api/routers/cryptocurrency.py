@@ -1,0 +1,101 @@
+#!/usr/bin/env python
+
+"""Router for cryptocurrency module methods of py-cmc."""
+
+from typing import Dict, List
+from fastapi import APIRouter, HTTPException, status, Query
+from cmc import (
+    CryptoCurrency,
+    MostVisited,
+    Ranking,
+    RecentlyAdded,
+    TopGainers,
+    TopLosers,
+    Trending,
+    InvalidCryptoCurrencyURL,
+    InvalidPageURL,
+)
+from api.schemas import (
+    CryptoCurrencyData,
+    MostVisitedData,
+    TopGainersData,
+    TopLosersData,
+    TrendingData,
+    RankingData,
+    RecentlyAddedData,
+)
+
+router = APIRouter(prefix="/crypto", tags=["CryptoCurrency"])
+
+
+@router.get("/", response_model=CryptoCurrencyData)
+async def cryptocurrency(name: str):
+    try:
+        result = CryptoCurrency(name).get_data
+        return result
+    except InvalidCryptoCurrencyURL as error:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(error))
+
+
+@router.get("/mostvisited", response_model=Dict[int, MostVisitedData])
+async def most_visited():
+    try:
+        result = MostVisited().get_data
+        return result
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Unable to fetch data."
+        )
+
+
+@router.get("/topgainers", response_model=Dict[int, TopGainersData])
+async def top_gainers():
+    try:
+        result = TopGainers().get_data
+        return result
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Unable to fetch data."
+        )
+
+
+@router.get("/toplosers", response_model=Dict[int, TopLosersData])
+async def top_losers():
+    try:
+        result = TopLosers().get_data
+        return result
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Unable to fetch data."
+        )
+
+
+@router.get("/trending", response_model=Dict[int, TrendingData])
+async def trending():
+    try:
+        result = Trending().get_data
+        return result
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Unable to fetch data."
+        )
+
+
+@router.get("/ranking", response_model=Dict[int, Dict[int, RankingData]])
+async def ranking(pages: List[int] = Query([1])):
+    try:
+        result = Ranking(pages).get_data
+        return result
+    except InvalidPageURL as error:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(error))
+
+
+@router.get("/recentlyadded", response_model=Dict[int, RecentlyAddedData])
+async def recently_added():
+    try:
+        result = RecentlyAdded().get_data
+        return result
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Unable to fetch data."
+        )

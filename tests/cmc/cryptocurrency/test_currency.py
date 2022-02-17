@@ -57,7 +57,7 @@ from cmc import CryptoCurrency
 def test_get_data(cryptocurrency: str, data: Dict[str, str]) -> None:
     result = CryptoCurrency(cryptocurrency).get_data
     time.sleep(2)
-    assert len(result) == 17
+    assert len(result) == 18
     assert result["name"] == data["name"]
     assert result["symbol"] == data["symbol"]
     assert result["max_supply"] == data["max_supply"]
@@ -68,3 +68,4 @@ def test_get_data(cryptocurrency: str, data: Dict[str, str]) -> None:
 def test_invalid_url_exception(cryptocurrency: str) -> None:
     with pytest.raises(Exception) as error:
         result = CryptoCurrency(cryptocurrency).get_data
+        time.sleep(2)

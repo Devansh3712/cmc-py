@@ -115,15 +115,19 @@ class Ranking(CMCBaseClass):
         driver.get(self.base_url + str(page))
         driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
         time.sleep(1)
-        result = driver.find_element(
-            By.XPATH, &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[5]/table/tbody&#39;
-        )
-        page_data = result.get_attribute(&#34;innerHTML&#34;)
-        driver.quit()
-        if not self.__check_cryptocurrency_url(page_data):
+        try:
+            result = driver.find_element(
+                By.XPATH,
+                &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[5]/table/tbody&#39;,
+            )
+            page_data = result.get_attribute(&#34;innerHTML&#34;)
+            driver.quit()
+            if not self.__check_cryptocurrency_url(page_data):
+                raise InvalidPageURL(self.base_url + str(page))
+            soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
+            return soup
+        except:
             raise InvalidPageURL(self.base_url + str(page))
-        soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
-        return soup
 
     def __get_cryptocurrency_ranks(
         self, page_data: bs4.element.Tag, start_rank: int
@@ -266,15 +270,19 @@ contains &lt;= 100 cryptocurrencies.</p>
         driver.get(self.base_url + str(page))
         driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
         time.sleep(1)
-        result = driver.find_element(
-            By.XPATH, &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[5]/table/tbody&#39;
-        )
-        page_data = result.get_attribute(&#34;innerHTML&#34;)
-        driver.quit()
-        if not self.__check_cryptocurrency_url(page_data):
+        try:
+            result = driver.find_element(
+                By.XPATH,
+                &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[5]/table/tbody&#39;,
+            )
+            page_data = result.get_attribute(&#34;innerHTML&#34;)
+            driver.quit()
+            if not self.__check_cryptocurrency_url(page_data):
+                raise InvalidPageURL(self.base_url + str(page))
+            soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
+            return soup
+        except:
             raise InvalidPageURL(self.base_url + str(page))
-        soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
-        return soup
 
     def __get_cryptocurrency_ranks(
         self, page_data: bs4.element.Tag, start_rank: int

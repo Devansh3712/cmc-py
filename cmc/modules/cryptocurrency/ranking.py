@@ -86,15 +86,19 @@ class Ranking(CMCBaseClass):
         driver.get(self.base_url + str(page))
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
         time.sleep(1)
-        result = driver.find_element(
-            By.XPATH, '//*[@id="__next"]/div/div[1]/div[2]/div/div/div[5]/table/tbody'
-        )
-        page_data = result.get_attribute("innerHTML")
-        driver.quit()
-        if not self.__check_cryptocurrency_url(page_data):
+        try:
+            result = driver.find_element(
+                By.XPATH,
+                '//*[@id="__next"]/div/div[1]/div[2]/div/div/div[5]/table/tbody',
+            )
+            page_data = result.get_attribute("innerHTML")
+            driver.quit()
+            if not self.__check_cryptocurrency_url(page_data):
+                raise InvalidPageURL(self.base_url + str(page))
+            soup = BeautifulSoup(page_data, features="lxml")
+            return soup
+        except:
             raise InvalidPageURL(self.base_url + str(page))
-        soup = BeautifulSoup(page_data, features="lxml")
-        return soup
 
     def __get_cryptocurrency_ranks(
         self, page_data: bs4.element.Tag, start_rank: int

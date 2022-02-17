@@ -98,9 +98,9 @@ class CryptoCurrency(CMCBaseClass):
         symbol: str = page_data.find(
             &#34;div&#34;, class_=&#34;sc-16r8icm-0 gpRPnR nameHeader&#34;
         ).small.text
-        rank: int = int(
-            page_data.find(&#34;div&#34;, class_=&#34;namePill namePillPrimary&#34;).text.split(&#34;#&#34;)[-1]
-        )
+        rank: str = page_data.find(&#34;div&#34;, class_=&#34;namePill namePillPrimary&#34;).text.split(
+            &#34;#&#34;
+        )[-1]
         price: str = page_data.find(&#34;div&#34;, class_=&#34;priceValue&#34;).span.text
         try:
             if page_data.find(&#34;span&#34;, class_=&#34;sc-15yy2pl-0 feeyND&#34;).span[&#34;class&#34;][0]:
@@ -177,6 +177,7 @@ class CryptoCurrency(CMCBaseClass):
         cryptocurrency_data: Dict[str, Any] = {
             &#34;name&#34;: name,
             &#34;symbol&#34;: symbol,
+            &#34;rank&#34;: rank,
             &#34;price&#34;: price,
             &#34;price_percent&#34;: price_percent,
             &#34;price_change&#34;: price_change,
@@ -293,9 +294,9 @@ class CryptoCurrency(CMCBaseClass):
         symbol: str = page_data.find(
             &#34;div&#34;, class_=&#34;sc-16r8icm-0 gpRPnR nameHeader&#34;
         ).small.text
-        rank: int = int(
-            page_data.find(&#34;div&#34;, class_=&#34;namePill namePillPrimary&#34;).text.split(&#34;#&#34;)[-1]
-        )
+        rank: str = page_data.find(&#34;div&#34;, class_=&#34;namePill namePillPrimary&#34;).text.split(
+            &#34;#&#34;
+        )[-1]
         price: str = page_data.find(&#34;div&#34;, class_=&#34;priceValue&#34;).span.text
         try:
             if page_data.find(&#34;span&#34;, class_=&#34;sc-15yy2pl-0 feeyND&#34;).span[&#34;class&#34;][0]:
@@ -372,6 +373,7 @@ class CryptoCurrency(CMCBaseClass):
         cryptocurrency_data: Dict[str, Any] = {
             &#34;name&#34;: name,
             &#34;symbol&#34;: symbol,
+            &#34;rank&#34;: rank,
             &#34;price&#34;: price,
             &#34;price_percent&#34;: price_percent,
             &#34;price_change&#34;: price_change,
@@ -440,9 +442,9 @@ def get_data(self) -&gt; Dict[str, Any]:
     symbol: str = page_data.find(
         &#34;div&#34;, class_=&#34;sc-16r8icm-0 gpRPnR nameHeader&#34;
     ).small.text
-    rank: int = int(
-        page_data.find(&#34;div&#34;, class_=&#34;namePill namePillPrimary&#34;).text.split(&#34;#&#34;)[-1]
-    )
+    rank: str = page_data.find(&#34;div&#34;, class_=&#34;namePill namePillPrimary&#34;).text.split(
+        &#34;#&#34;
+    )[-1]
     price: str = page_data.find(&#34;div&#34;, class_=&#34;priceValue&#34;).span.text
     try:
         if page_data.find(&#34;span&#34;, class_=&#34;sc-15yy2pl-0 feeyND&#34;).span[&#34;class&#34;][0]:
@@ -519,6 +521,7 @@ def get_data(self) -&gt; Dict[str, Any]:
     cryptocurrency_data: Dict[str, Any] = {
         &#34;name&#34;: name,
         &#34;symbol&#34;: symbol,
+        &#34;rank&#34;: rank,
         &#34;price&#34;: price,
         &#34;price_percent&#34;: price_percent,
         &#34;price_change&#34;: price_change,

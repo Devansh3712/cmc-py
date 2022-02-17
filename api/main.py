@@ -1,6 +1,11 @@
+#!/usr/bin/env python
+
+"""Module for py-cmc methods as API functions."""
+
 from datetime import datetime
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from api.routers import cryptocurrency
 
 app = FastAPI()
 app.add_middleware(
@@ -10,6 +15,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.include_router(cryptocurrency.router)
 
 
 @app.get("/")

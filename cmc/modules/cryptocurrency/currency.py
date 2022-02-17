@@ -69,9 +69,9 @@ class CryptoCurrency(CMCBaseClass):
         symbol: str = page_data.find(
             "div", class_="sc-16r8icm-0 gpRPnR nameHeader"
         ).small.text
-        rank: int = int(
-            page_data.find("div", class_="namePill namePillPrimary").text.split("#")[-1]
-        )
+        rank: str = page_data.find("div", class_="namePill namePillPrimary").text.split(
+            "#"
+        )[-1]
         price: str = page_data.find("div", class_="priceValue").span.text
         try:
             if page_data.find("span", class_="sc-15yy2pl-0 feeyND").span["class"][0]:
@@ -148,6 +148,7 @@ class CryptoCurrency(CMCBaseClass):
         cryptocurrency_data: Dict[str, Any] = {
             "name": name,
             "symbol": symbol,
+            "rank": rank,
             "price": price,
             "price_percent": price_percent,
             "price_change": price_change,
