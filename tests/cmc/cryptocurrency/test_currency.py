@@ -67,5 +67,5 @@ def test_get_data(cryptocurrency: str, data: Dict[str, str]) -> None:
 @pytest.mark.parametrize("cryptocurrency", ["btcoin", "etereum"])
 def test_invalid_url_exception(cryptocurrency: str) -> None:
     with pytest.raises(Exception) as error:
-        result = CryptoCurrency(cryptocurrency).get_data
         time.sleep(2)
+        result = CryptoCurrency(cryptocurrency).get_data

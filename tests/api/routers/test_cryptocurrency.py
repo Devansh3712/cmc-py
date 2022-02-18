@@ -130,6 +130,7 @@ def test_ranking() -> None:
 def test_ranking_invalid_url(page: int) -> None:
     response = client.get(f"/crypto/ranking?pages={page}")
     result = response.json()
+    time.sleep(2)
     assert (
         result["detail"]
         == f"https://coinmarketcap.com/?page={page} is not a valid webpage."

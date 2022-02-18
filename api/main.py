@@ -5,7 +5,7 @@
 from datetime import datetime
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.routers import cryptocurrency
+from api.routers import cryptocurrency, exchange
 
 app = FastAPI()
 app.add_middleware(
@@ -16,6 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(cryptocurrency.router)
+app.include_router(exchange.router)
 
 
 @app.get("/")

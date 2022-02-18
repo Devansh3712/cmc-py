@@ -101,3 +101,43 @@ class RecentlyAddedData(BaseModel):
     blockchain: str
     added: str
     timestamp: datetime
+
+
+class ExchangeData(BaseModel):
+    name: str
+    volume_24h: Tuple[str, ...]
+    website: str
+    cmc_url: str
+    timestamp: datetime
+
+
+class DerivativesData(BaseModel):
+    name: str
+    cmc_link: str
+    cmc_name: str
+    url: str
+    timestamp: datetime
+
+
+class DexData(BaseModel):
+    name: str
+    cmc_link: str
+    cmc_name: str
+    url: str
+    timestamp: datetime
+
+
+class LendingData(BaseModel):
+    name: str
+    cmc_link: str
+    cmc_name: str
+    url: str
+    timestamp: datetime
+
+
+class SpotData(BaseModel):
+    name: str
+    cmc_link: str
+    cmc_name: str
+    url: str
+    timestamp: datetime
