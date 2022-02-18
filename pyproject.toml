@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "coinmarketcap"
+name = "py-cmc"
 version = "0.1.0"
 description = "Unofficial CoinMarketCap API and Python wrapper"
 authors = ["Devansh3712 <devanshamity@gmail.com>"]
@@ -21,6 +21,7 @@ fastapi = {extras = ["all"], version = "^0.73.0"}
 redis = "^4.1.4"
 types-redis = "^4.1.16"
 types-PyYAML = "^6.0.4"
+setuptools = "^60.9.3"
 
 [tool.poetry.dev-dependencies]
 
