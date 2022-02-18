@@ -22,7 +22,7 @@ if __name__ == "__main__":
         author="Devansh Singh",
         author_email="devanshamity@gmail.com",
         url="https://devansh3712.github.io/py-cmc/",
-        download_url="",
+        download_url="https://pypi.org/project/py-cmc/",
         project_urls={
             "Source": "https://github.com/Devansh3712/py-cmc",
             "Documentation": "https://devansh3712.github.io/py-cmc/",
