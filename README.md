@@ -1,7 +1,7 @@
-# py-cmc
-Unofficial [CoinMarketCap](https://coinmarketcap.com/) API and Python wrapper. `py-cmc` uses `Selenium` and `BeautifulSoup` to scrape the website and return desired data.
+# cmc-py
+Unofficial [CoinMarketCap](https://coinmarketcap.com/) API and Python wrapper. `cmc-py` uses `Selenium` and `BeautifulSoup` to scrape the website and return desired data.
 
-[![mypy lint](https://github.com/Devansh3712/py-cmc/actions/workflows/lint.yml/badge.svg)](https://github.com/Devansh3712/py-cmc/actions/workflows/lint.yml) [![pytest](https://github.com/Devansh3712/py-cmc/actions/workflows/test.yml/badge.svg)](https://github.com/Devansh3712/py-cmc/actions/workflows/test.yml) [![codecov](https://github.com/Devansh3712/py-cmc/actions/workflows/codecov.yml/badge.svg)](https://github.com/Devansh3712/py-cmc/actions/workflows/codecov.yml) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![codecov](https://codecov.io/gh/Devansh3712/py-cmc/branch/main/graph/badge.svg?token=HDZL3E43TR)](https://codecov.io/gh/Devansh3712/py-cmc)
+[![mypy lint](https://github.com/Devansh3712/cmc-py/actions/workflows/lint.yml/badge.svg)](https://github.com/Devansh3712/cmc-py/actions/workflows/lint.yml) [![pytest](https://github.com/Devansh3712/cmc-py/actions/workflows/test.yml/badge.svg)](https://github.com/Devansh3712/cmc-py/actions/workflows/test.yml) [![codecov](https://github.com/Devansh3712/cmc-py/actions/workflows/codecov.yml/badge.svg)](https://github.com/Devansh3712/cmc-py/actions/workflows/codecov.yml) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![codecov](https://codecov.io/gh/Devansh3712/cmc-py/branch/main/graph/badge.svg?token=HDZL3E43TR)](https://codecov.io/gh/Devansh3712/cmc-py)
 
 ### Installation
 
@@ -12,7 +12,7 @@ python setup.py install
 
 - Using `Python Package Index`
 ```shell
-pip install py-cmc
+pip install cmc-py
 ```
 
 - Using `poetry`
@@ -21,7 +21,7 @@ poetry install
 ```
 
 ### Wrapper
-`py-cmc` library can be used to fetch data for the following:
+`cmc-py` library can be used to fetch data for the following:
 - `CryptoCurrencies`
 ```python
 import json
@@ -50,7 +50,7 @@ print(json.dumps(upcoming_nft_sales, indent=4, default=str))
 ```
 
 ### API
-An API is also built using the `py-cmc` modules using `FastAPI` and `Redis`. Redis configurations can be set using the `config.yml` file, and it is used to cache the scraped data fetched through `py-cmc`.
+An API is also built using the `cmc-py` modules using `FastAPI` and `Redis`. Redis configurations can be set using the `config.yml` file, and it is used to cache the scraped data fetched through `cmc-py`.
 
 ```shell
 uvicorn api.main:app

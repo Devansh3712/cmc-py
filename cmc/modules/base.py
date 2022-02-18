@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """Module for storing settings for Selenium and requests used by
-other py-cmc modules.
+other cmc-py modules.
 
 A random User-Agent and a proxy is used for requests session and Selenium
 driver in order to circumvent an IP ban. Data is scraped through Selenium
@@ -24,7 +24,7 @@ from cmc.utils.exceptions import ProxyTimeOut, InvalidProxy
 
 
 class CMCBaseClass:
-    """Class for basic Selenium and requests settings for py-cmc
+    """Class for basic Selenium and requests settings for cmc-py
     modules. Sets up a random User-Agent and a random proxy each
     time the class is called.
     """

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Module for packaging py-cmc for PyPI."""
+"""Module for packaging cmc-py for PyPI."""
 
 import os
 from setuptools import setup, find_packages
@@ -17,15 +17,15 @@ with open(os.path.join(current_directory, "README.md"), encoding="utf-8") as fil
 
 if __name__ == "__main__":
     setup(
-        name="py-cmc",
+        name="cmc-py",
         version="0.1.0",
         author="Devansh Singh",
         author_email="devanshamity@gmail.com",
-        url="https://devansh3712.github.io/py-cmc/",
-        download_url="https://pypi.org/project/py-cmc/",
+        url="https://devansh3712.github.io/cmc-py/",
+        download_url="https://pypi.org/project/cmc-py/",
         project_urls={
-            "Source": "https://github.com/Devansh3712/py-cmc",
-            "Documentation": "https://devansh3712.github.io/py-cmc/",
+            "Source": "https://github.com/Devansh3712/cmc-py",
+            "Documentation": "https://devansh3712.github.io/cmc-py/",
         },
         description="Unofficial CoinMarketCap API and Python wrapper",
         long_description=long_description,

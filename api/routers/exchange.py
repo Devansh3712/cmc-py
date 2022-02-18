@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Router for exchange module methods of py-cmc."""
+"""Router for exchange module methods of cmc-py."""
 
 from typing import Dict
 from fastapi import APIRouter, HTTPException, status

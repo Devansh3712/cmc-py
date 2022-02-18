@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Module for py-cmc methods as API functions."""
+"""Module for cmc-py methods as API functions."""
 
 from datetime import datetime
 from fastapi import FastAPI
@@ -24,6 +24,6 @@ app.include_router(nft.router)
 async def root():
     return {
         "message": "CoinMarketCap Unofficial API is working.",
-        "source_code": "https://github.com/Devansh3712/py-cmc",
+        "source_code": "https://github.com/Devansh3712/cmc-py",
         "timestamp": datetime.now(),
     }

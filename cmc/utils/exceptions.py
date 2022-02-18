@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Module for storing custom exceptions for py-cmc modules."""
+"""Module for storing custom exceptions for cmc-py modules."""
 
 
 class InvalidPageURL(Exception):

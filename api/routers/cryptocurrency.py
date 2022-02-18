@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Router for cryptocurrency module methods of py-cmc."""
+"""Router for cryptocurrency module methods of cmc-py."""
 
 from typing import Dict, List
 from fastapi import APIRouter, HTTPException, status, Query
