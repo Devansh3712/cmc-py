@@ -141,3 +141,21 @@ class SpotData(BaseModel):
     cmc_name: str
     url: str
     timestamp: datetime
+
+
+class NFTRankingData(BaseModel):
+    name: str
+    timestamp: datetime
+
+
+class UpcomingSaleData(BaseModel):
+    name: str
+    blockchain: str
+    info: str
+    discord: str
+    twitter: str
+    website: str
+    sale_on: str
+    pre_sale: Optional[str]
+    sale: str
+    timestamp: datetime

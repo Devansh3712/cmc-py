@@ -11,7 +11,6 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
-from cmc.utils.exceptions import InvalidPageURL
 
 
 class NFTRanking(CMCBaseClass):
