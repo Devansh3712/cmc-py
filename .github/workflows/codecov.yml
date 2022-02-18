@@ -11,6 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Setup Redis
+      uses: supercharge/redis-github-action@1.2.0
+      with: 
+        redis-version: 6
+    - name: Install Redis CLI
+      run: sudo apt-get install -y redis-tools
     - name: Set up Python 3.10
       uses: actions/setup-python@v2
       with:
