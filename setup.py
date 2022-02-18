@@ -17,12 +17,12 @@ with open(os.path.join(current_directory, "README.md"), encoding="utf-8") as fil
 
 if __name__ == "__main__":
     setup(
-        name="cmc-py",
+        name="cmc-py-wrapper",
         version="0.1.0",
         author="Devansh Singh",
         author_email="devanshamity@gmail.com",
         url="https://devansh3712.github.io/cmc-py/",
-        download_url="https://pypi.org/project/cmc-py/",
+        download_url="https://pypi.org/project/cmc-py-wrapper/",
         project_urls={
             "Source": "https://github.com/Devansh3712/cmc-py",
             "Documentation": "https://devansh3712.github.io/cmc-py/",

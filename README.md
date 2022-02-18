@@ -12,7 +12,7 @@ python setup.py install
 
 - Using `Python Package Index`
 ```shell
-pip install cmc-py
+pip install cmc-py-wrapper
 ```
 
 - Using `poetry`

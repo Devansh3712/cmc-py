@@ -9,4 +9,4 @@ def test_root() -> None:
     result = response.json()
     assert response.status_code == 200
     assert result["message"] == "CoinMarketCap Unofficial API is working."
-    assert result["source_code"] == "https://github.com/Devansh3712/py-cmc"
+    assert result["source_code"] == "https://github.com/Devansh3712/cmc-py"
