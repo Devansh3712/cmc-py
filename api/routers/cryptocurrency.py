@@ -15,6 +15,7 @@ from cmc import (
     InvalidCryptoCurrencyURL,
     InvalidPageURL,
 )
+from api.database import Database
 from api.schemas import (
     CryptoCurrencyData,
     MostVisitedData,
@@ -25,13 +26,17 @@ from api.schemas import (
     RecentlyAddedData,
 )
 
+redis = Database()
 router = APIRouter(prefix="/crypto", tags=["CryptoCurrency"])
 
 
 @router.get("/", response_model=CryptoCurrencyData)
 async def cryptocurrency(name: str):
     try:
+        if redis.check_data(name):
+            return redis.get_data(name)
         result = CryptoCurrency(name).get_data
+        redis.add_data(name, result)
         return result
     except InvalidCryptoCurrencyURL as error:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(error))
@@ -40,7 +45,10 @@ async def cryptocurrency(name: str):
 @router.get("/mostvisited", response_model=Dict[int, MostVisitedData])
 async def most_visited():
     try:
+        if redis.check_data("mostvisited"):
+            return redis.get_data("mostvisited")
         result = MostVisited().get_data
+        redis.add_data("mostvisited", result)
         return result
     except:
         raise HTTPException(
@@ -51,7 +59,10 @@ async def most_visited():
 @router.get("/topgainers", response_model=Dict[int, TopGainersData])
 async def top_gainers():
     try:
+        if redis.check_data("topgainers"):
+            return redis.get_data("topgainers")
         result = TopGainers().get_data
+        redis.add_data("topgainers", result)
         return result
     except:
         raise HTTPException(
@@ -62,7 +73,10 @@ async def top_gainers():
 @router.get("/toplosers", response_model=Dict[int, TopLosersData])
 async def top_losers():
     try:
+        if redis.check_data("toplosers"):
+            return redis.get_data("toplosers")
         result = TopLosers().get_data
+        redis.add_data("toplosers", result)
         return result
     except:
         raise HTTPException(
@@ -73,7 +87,10 @@ async def top_losers():
 @router.get("/trending", response_model=Dict[int, TrendingData])
 async def trending():
     try:
+        if redis.check_data("trending"):
+            return redis.get_data("trending")
         result = Trending().get_data
+        redis.add_data("trending", result)
         return result
     except:
         raise HTTPException(
@@ -93,7 +110,10 @@ async def ranking(pages: List[int] = Query([1])):
 @router.get("/recentlyadded", response_model=Dict[int, RecentlyAddedData])
 async def recently_added():
     try:
+        if redis.check_data("recentlyadded"):
+            return redis.get_data("recentlyadded")
         result = RecentlyAdded().get_data
+        redis.add_data("recentlyadded", result)
         return result
     except:
         raise HTTPException(
