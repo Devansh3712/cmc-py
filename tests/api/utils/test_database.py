@@ -1,6 +1,6 @@
 from typing import Dict
 import pytest
-from api.database import Database
+from api.utils.database import Database
 
 redis = Database()
 

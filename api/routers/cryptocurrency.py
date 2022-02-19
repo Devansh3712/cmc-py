@@ -15,8 +15,8 @@ from cmc import (
     InvalidCryptoCurrencyURL,
     InvalidPageURL,
 )
-from api.database import Database
-from api.schemas import (
+from api.utils.database import Database
+from api.utils.schemas import (
     CryptoCurrencyData,
     MostVisitedData,
     TopGainersData,

@@ -5,7 +5,7 @@
 from typing import Dict, List
 from fastapi import APIRouter, HTTPException, status, Query
 from cmc import NFTRanking, UpcomingSale
-from api.schemas import NFTRankingData, UpcomingSaleData
+from api.utils.schemas import NFTRankingData, UpcomingSaleData
 
 router = APIRouter(prefix="/nft", tags=["NFT"])
 

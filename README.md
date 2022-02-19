@@ -24,33 +24,30 @@ poetry install
 `cmc-py` library can be used to fetch data for the following:
 - `CryptoCurrencies`
 ```python
-import json
-from cmc import Trending
+from cmc import Trending, format_data
 
 top_30_trending = Trending().get_data
-print(json.dumps(top_30_trending, indent=4, default=str))
+print(format_data(top_30_trending))
 ```
 
 - `Exchanges`
 ```python
-import json
-from cmc import Spot
+from cmc import Spot, format_data
 
 spot_exchanges = Spot().get_data
-print(json.dumps(spot_exchanges, indent=4, default=str))
+print(format_data(spot_exchanges))
 ```
 
 - `Non Fungible Tokens (NFTs)`
 ```python
-import json
-from cmc import UpcomingSale
+from cmc import UpcomingSale, format_data
 
 upcoming_nft_sales = UpcomingSale(pages=[1, 2]).get_data
-print(json.dumps(upcoming_nft_sales, indent=4, default=str))
+print(format_data(upcoming_nft_sales))
 ```
 
 ### API
-An API is also built using the `cmc-py` modules using `FastAPI` and `Redis`. Redis configurations can be set using the `config.yml` file, and it is used to cache the scraped data fetched through `cmc-py`.
+An API is also built using the `cmc-py` modules using `FastAPI` and `Redis`. Redis configurations can be set using the `config.yml` file, and it is used to cache the scraped data fetched through `cmc-py`. `Redis` server should be running in the background in order to cache API calls.
 
 ```shell
 uvicorn api.main:app

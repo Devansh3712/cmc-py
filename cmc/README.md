@@ -29,8 +29,10 @@ cmc
 │       └── upcoming.py
 ├── py.typed
 ├── resources
-│   └── user_agents.json
+│   ├── __init__.py
+│   └── user_agents.py
 └── utils
     ├── __init__.py
-    └── exceptions.py
+    ├── exceptions.py
+    └── format.py
 ```

@@ -6,7 +6,7 @@ import json
 import os
 from typing import Any, Dict
 import redis
-from .config import settings
+from api.utils.config import settings
 
 
 class Database:
@@ -62,6 +62,7 @@ class Database:
         check = self.check_data(name)
         if check:
             data = self.database.get(name)
-            return json.loads(data.decode("utf-8"))  # type: ignore
+            result = json.loads(data.decode("utf-8"))  # type: ignore
+            return result
         else:
             return False

@@ -5,8 +5,14 @@
 from typing import Dict
 from fastapi import APIRouter, HTTPException, status
 from cmc import Derivatives, Dex, Exchange, Lending, Spot, InvalidExchangeURL
-from api.database import Database
-from api.schemas import ExchangeData, DerivativesData, DexData, LendingData, SpotData
+from api.utils.database import Database
+from api.utils.schemas import (
+    ExchangeData,
+    DerivativesData,
+    DexData,
+    LendingData,
+    SpotData,
+)
 
 redis = Database()
 router = APIRouter(prefix="/exchange", tags=["Exchange"])

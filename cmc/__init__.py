@@ -22,3 +22,4 @@ from cmc.utils.exceptions import (
     ProxyTimeOut,
     InvalidProxy,
 )
+from cmc.utils.format import format_data

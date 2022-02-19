@@ -13,7 +13,7 @@ with open(os.path.join(current_directory, "README.md"), encoding="utf-8") as fil
 if __name__ == "__main__":
     setup(
         name="cmc-py-wrapper",
-        version="0.1.1",
+        version="0.1.2",
         author="Devansh Singh",
         author_email="devanshamity@gmail.com",
         url="https://devansh3712.github.io/cmc-py/",
