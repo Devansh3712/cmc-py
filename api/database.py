@@ -6,7 +6,7 @@ import json
 import os
 from typing import Any, Dict
 import redis
-import yaml
+from .config import settings
 
 
 class Database:
@@ -15,22 +15,10 @@ class Database:
     def __init__(self) -> None:
         self.current_dir = os.path.dirname(os.path.realpath(__file__))
         self.parent_dir = os.path.dirname(self.current_dir)
-        self.config = self.__load_yaml
-        self.host = "localhost" if self.config["host"] is None else self.config["host"]
-        self.port = 6379 if self.config["port"] is None else self.config["port"]
-        self.expire = 600 if self.config["expire"] is None else self.config["expire"]
+        self.host = "localhost" if settings.host is None else settings.host
+        self.port = 6379 if settings.port is None else settings.port
+        self.expire = 600 if settings.expire is None else settings.expire
         self.database = redis.Redis(self.host, self.port)
-
-    @property
-    def __load_yaml(self) -> Dict[Any, Any]:
-        """Load Redis configurations from `config.yml` file.
-
-        Returns:
-            Dict[Any, Any]: Redis configuration data.
-        """
-        with open(os.path.join(self.parent_dir, "config.yml")) as stream:
-            data = yaml.safe_load(stream)
-        return data["redis"]
 
     def add_data(self, name: str, data: Dict[str, Any]) -> bool:
         """Add data to the redis cache server.
