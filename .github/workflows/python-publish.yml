@@ -1,4 +1,4 @@
-name: Python Package Upload
+name: PyPI
 
 on:
   release:
