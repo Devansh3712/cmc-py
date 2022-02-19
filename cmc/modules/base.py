@@ -8,7 +8,6 @@ driver in order to circumvent an IP ban. Data is scraped through Selenium
 (to load JavaScript components) and BeautifulSoup (to parse website data).
 """
 
-import json
 import os
 import random
 import re
@@ -20,6 +19,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 from webdriver_manager.chrome import ChromeDriverManager
+from cmc.resources.user_agents import user_agents
 from cmc.utils.exceptions import ProxyTimeOut, InvalidProxy
 
 
@@ -92,11 +92,7 @@ class CMCBaseClass:
         Returns:
             str: User-Agent for requests Session header.
         """
-        with open(
-            os.path.join(self.parent_dir, "resources", "user_agents.json")
-        ) as file:
-            user_agents: Dict[str, List[str]] = json.load(file)
-        result: str = random.choice(user_agents["User-Agent"])
+        result: str = random.choice(user_agents)
         return result
 
     @property

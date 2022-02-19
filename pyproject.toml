@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "cmc-py"
+name = "cmc"
 version = "0.1.0"
 description = "Unofficial CoinMarketCap API and Python wrapper"
 authors = ["Devansh3712 <devanshamity@gmail.com>"]
