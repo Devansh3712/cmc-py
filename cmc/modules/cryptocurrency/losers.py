@@ -57,8 +57,7 @@ class TopLosers(CMCBaseClass):
         last 24 hours.
 
         Returns:
-            Dict[int, Dict[str, Any]]: Scraped data of top losing
-            CryptoCurrencies.
+            Dict[int, Dict[str, Any]]: Scraped data of top losing CryptoCurrencies.
         """
         top_losers: Dict[int, Dict[str, Any]] = {}
         page_data = self.__get_page_data

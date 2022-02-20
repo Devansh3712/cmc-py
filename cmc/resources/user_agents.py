@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+
+"""Module for storing random user-agents used by `modules.base.CMCBaseClass`."""
+
 from typing import Tuple
 
 user_agents: Tuple[str, ...] = (

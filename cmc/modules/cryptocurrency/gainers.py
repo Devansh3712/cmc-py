@@ -57,8 +57,7 @@ class TopGainers(CMCBaseClass):
         last 24 hours.
 
         Returns:
-            Dict[int, Dict[str, Any]]: Scraped data of top gaining
-            CryptoCurrencies.
+            Dict[int, Dict[str, Any]]: Scraped data of top gaining CryptoCurrencies.
         """
         top_gainers: Dict[int, Dict[str, Any]] = {}
         page_data = self.__get_page_data

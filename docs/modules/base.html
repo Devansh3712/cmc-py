@@ -6,7 +6,7 @@
 <meta name="generator" content="pdoc 0.10.0" />
 <title>cmc.modules.base API documentation</title>
 <meta name="description" content="Module for storing settings for Selenium and requests used by
-other py-cmc modules …" />
+other cmc-py modules …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -24,7 +24,7 @@ other py-cmc modules …" />
 </header>
 <section id="section-intro">
 <p>Module for storing settings for Selenium and requests used by
-other py-cmc modules.</p>
+other cmc-py modules.</p>
 <p>A random User-Agent and a proxy is used for requests session and Selenium
 driver in order to circumvent an IP ban. Data is scraped through Selenium
 (to load JavaScript components) and BeautifulSoup (to parse website data).</p>
@@ -35,14 +35,13 @@ driver in order to circumvent an IP ban. Data is scraped through Selenium
 <pre><code class="python">#!/usr/bin/env python
 
 &#34;&#34;&#34;Module for storing settings for Selenium and requests used by
-other py-cmc modules.
+other cmc-py modules.
 
 A random User-Agent and a proxy is used for requests session and Selenium
 driver in order to circumvent an IP ban. Data is scraped through Selenium
 (to load JavaScript components) and BeautifulSoup (to parse website data).
 &#34;&#34;&#34;
 
-import json
 import os
 import random
 import re
@@ -54,11 +53,12 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 from webdriver_manager.chrome import ChromeDriverManager
+from cmc.resources.user_agents import user_agents
 from cmc.utils.exceptions import ProxyTimeOut, InvalidProxy
 
 
 class CMCBaseClass:
-    &#34;&#34;&#34;Class for basic Selenium and requests settings for py-cmc
+    &#34;&#34;&#34;Class for basic Selenium and requests settings for cmc-py
     modules. Sets up a random User-Agent and a random proxy each
     time the class is called.
     &#34;&#34;&#34;
@@ -126,11 +126,7 @@ class CMCBaseClass:
         Returns:
             str: User-Agent for requests Session header.
         &#34;&#34;&#34;
-        with open(
-            os.path.join(self.parent_dir, &#34;resources&#34;, &#34;user_agents.json&#34;)
-        ) as file:
-            user_agents: Dict[str, List[str]] = json.load(file)
-        result: str = random.choice(user_agents[&#34;User-Agent&#34;])
+        result: str = random.choice(user_agents)
         return result
 
     @property
@@ -163,7 +159,7 @@ class CMCBaseClass:
 <span>(</span><span>proxy: Optional[str])</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class for basic Selenium and requests settings for py-cmc
+<div class="desc"><p>Class for basic Selenium and requests settings for cmc-py
 modules. Sets up a random User-Agent and a random proxy each
 time the class is called.</p>
 <h2 id="args">Args</h2>
@@ -176,7 +172,7 @@ time the class is called.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class CMCBaseClass:
-    &#34;&#34;&#34;Class for basic Selenium and requests settings for py-cmc
+    &#34;&#34;&#34;Class for basic Selenium and requests settings for cmc-py
     modules. Sets up a random User-Agent and a random proxy each
     time the class is called.
     &#34;&#34;&#34;
@@ -244,11 +240,7 @@ time the class is called.</p>
         Returns:
             str: User-Agent for requests Session header.
         &#34;&#34;&#34;
-        with open(
-            os.path.join(self.parent_dir, &#34;resources&#34;, &#34;user_agents.json&#34;)
-        ) as file:
-            user_agents: Dict[str, List[str]] = json.load(file)
-        result: str = random.choice(user_agents[&#34;User-Agent&#34;])
+        result: str = random.choice(user_agents)
         return result
 
     @property
