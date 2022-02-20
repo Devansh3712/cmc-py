@@ -43,6 +43,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
+from cmc.utils.exceptions import ScrapeError
 
 
 class Lending(CMCBaseClass):
@@ -61,6 +62,9 @@ class Lending(CMCBaseClass):
         &#34;&#34;&#34;Scrape the table from top lending exchanges page data and return
         the scraped data.
 
+        Raises:
+            ScrapeError: Raised when data cannot be scraped from the webpage.
+
         Returns:
             bs4.BeautifulSoup: Scraped page data.
         &#34;&#34;&#34;
@@ -69,17 +73,20 @@ class Lending(CMCBaseClass):
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.base_url)
-        driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
-        time.sleep(1)
-        result = driver.find_element(
-            By.XPATH,
-            &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[2]/table/tbody&#39;,
-        )
-        page_data = result.get_attribute(&#34;innerHTML&#34;)
-        driver.quit()
-        soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
-        return soup
+        try:
+            driver.get(self.base_url)
+            driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
+            time.sleep(1)
+            result = driver.find_element(
+                By.XPATH,
+                &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[2]/table/tbody&#39;,
+            )
+            page_data = result.get_attribute(&#34;innerHTML&#34;)
+            driver.quit()
+            soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
+            return soup
+        except:
+            raise ScrapeError
 
     @property
     def get_data(self) -&gt; Dict[int, Dict[str, Any]]:
@@ -149,6 +156,9 @@ class Lending(CMCBaseClass):
         &#34;&#34;&#34;Scrape the table from top lending exchanges page data and return
         the scraped data.
 
+        Raises:
+            ScrapeError: Raised when data cannot be scraped from the webpage.
+
         Returns:
             bs4.BeautifulSoup: Scraped page data.
         &#34;&#34;&#34;
@@ -157,17 +167,20 @@ class Lending(CMCBaseClass):
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.base_url)
-        driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
-        time.sleep(1)
-        result = driver.find_element(
-            By.XPATH,
-            &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[2]/table/tbody&#39;,
-        )
-        page_data = result.get_attribute(&#34;innerHTML&#34;)
-        driver.quit()
-        soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
-        return soup
+        try:
+            driver.get(self.base_url)
+            driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
+            time.sleep(1)
+            result = driver.find_element(
+                By.XPATH,
+                &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[2]/table/tbody&#39;,
+            )
+            page_data = result.get_attribute(&#34;innerHTML&#34;)
+            driver.quit()
+            soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
+            return soup
+        except:
+            raise ScrapeError
 
     @property
     def get_data(self) -&gt; Dict[int, Dict[str, Any]]:

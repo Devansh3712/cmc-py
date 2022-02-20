@@ -34,13 +34,14 @@
 from datetime import datetime
 import os
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 import bs4
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
 from cmc.utils.exceptions import InvalidPageURL
+from cmc.utils.models import RankingData
 
 
 class Ranking(CMCBaseClass):
@@ -49,28 +50,36 @@ class Ranking(CMCBaseClass):
     &#34;&#34;&#34;
 
     def __init__(
-        self, pages: List[int] = [1], ratelimit: int = 2, proxy: Optional[str] = None
+        self,
+        pages: List[int] = [1],
+        ratelimit: int = 2,
+        proxy: Optional[str] = None,
+        as_dict: bool = False,
     ) -&gt; None:
         &#34;&#34;&#34;
         Args:
             pages (List[int], optional): Pages to scrape data from. Defaults to [1].
             ratelimit (int, optional): Ratelimit for parsing each page. Defaults to 2 seconds.
             proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
+            as_dict (bool): Return the data as a dictionary. Defaults to False.
         &#34;&#34;&#34;
         super().__init__(proxy)
         self.base_url = &#34;https://coinmarketcap.com/?page=&#34;
         self.ratelimit = ratelimit
         self.pages = pages
+        self.out = as_dict
 
     @property
-    def get_data(self) -&gt; Dict[int, Dict[int, Dict[str, Any]]]:
+    def get_data(
+        self,
+    ) -&gt; Union[Dict[int, Dict[int, Dict[str, Any]]], Dict[int, Dict[int, RankingData]]]:
         &#34;&#34;&#34;Get a dictionary of cryptocurrency ranks with page number as keys
         and rankings as values.
 
         Returns:
-            Dict[int, Dict[int, Dict[str, Any]]]: Cryptocurrency rankings of all pages.
+            Union[Dict[int, Dict[int, Dict[str, Any]]], Dict[int, Dict[int, RankingData]]]: Cryptocurrency rankings of all pages.
         &#34;&#34;&#34;
-        ranks: Dict[int, Dict[int, Dict[str, Any]]] = {}
+        ranks: Dict[int, Dict[int, Any]] = {}
         for page in self.pages:
             start_rank = (page - 1) * 100
             page_data = self.__get_page_data(page)
@@ -112,10 +121,10 @@ class Ranking(CMCBaseClass):
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.base_url + str(page))
-        driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
-        time.sleep(1)
         try:
+            driver.get(self.base_url + str(page))
+            driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
+            time.sleep(1)
             result = driver.find_element(
                 By.XPATH,
                 &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[5]/table/tbody&#39;,
@@ -131,7 +140,7 @@ class Ranking(CMCBaseClass):
 
     def __get_cryptocurrency_ranks(
         self, page_data: bs4.element.Tag, start_rank: int
-    ) -&gt; Dict[int, Dict[str, Any]]:
+    ) -&gt; Union[Dict[int, Dict[str, Any]], Dict[int, RankingData]]:
         &#34;&#34;&#34;Scrape cryptocurrency names and ranks from data returned by
         the __get_page_data() method.
 
@@ -140,9 +149,9 @@ class Ranking(CMCBaseClass):
             start_rank (int): Rank to start storing from.
 
         Returns:
-            Dict[int, Dict[str, Dict[str, Any]]]: Cryptocurrency rankings of the current page.
+            Union[Dict[int, Dict[str, Any]], Dict[int, RankingData]]: Cryptocurrency rankings of the current page.
         &#34;&#34;&#34;
-        cryptocurrency_ranking: Dict[int, Dict[str, Any]] = {}
+        cryptocurrency_ranking: Dict[int, Any] = {}
         data = page_data.find_all(&#34;tr&#34;)
         for rank, content in enumerate(data):
             td = content.find_all(&#34;td&#34;)[2]
@@ -159,13 +168,17 @@ class Ranking(CMCBaseClass):
             except:
                 symbol: str = td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;).find(&#34;span&#34;, class_=&#34;crypto-symbol&#34;).text  # type: ignore
             cmc_link: str = td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;)[&#34;href&#34;]
-            cryptocurrency_ranking[start_rank + rank + 1] = {
+            result = {
                 &#34;name&#34;: name,
                 &#34;symbol&#34;: symbol,
                 &#34;cmc_name&#34;: cmc_link.split(&#34;/&#34;)[-2],
                 &#34;url&#34;: self.cmc_url + cmc_link,
                 &#34;timestamp&#34;: datetime.now(),
             }
+            if self.out:
+                cryptocurrency_ranking[start_rank + rank + 1] = result
+            else:
+                cryptocurrency_ranking[start_rank + rank + 1] = RankingData(**result)
         return cryptocurrency_ranking</code></pre>
 </details>
 </section>
@@ -180,7 +193,7 @@ class Ranking(CMCBaseClass):
 <dl>
 <dt id="cmc.modules.cryptocurrency.ranking.Ranking"><code class="flex name class">
 <span>class <span class="ident">Ranking</span></span>
-<span>(</span><span>pages: List[int] = [1], ratelimit: int = 2, proxy: Optional[str] = None)</span>
+<span>(</span><span>pages: List[int] = [1], ratelimit: int = 2, proxy: Optional[str] = None, as_dict: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class for scraping cryptocurrency ranking. Each page
@@ -193,6 +206,8 @@ contains &lt;= 100 cryptocurrencies.</p>
 <dd>Ratelimit for parsing each page. Defaults to 2 seconds.</dd>
 <dt><strong><code>proxy</code></strong> :&ensp;<code>Optional[str]</code>, optional</dt>
 <dd>Proxy to be used for Selenium and requests Session. Defaults to None.</dd>
+<dt><strong><code>as_dict</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Return the data as a dictionary. Defaults to False.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -204,28 +219,36 @@ contains &lt;= 100 cryptocurrencies.</p>
     &#34;&#34;&#34;
 
     def __init__(
-        self, pages: List[int] = [1], ratelimit: int = 2, proxy: Optional[str] = None
+        self,
+        pages: List[int] = [1],
+        ratelimit: int = 2,
+        proxy: Optional[str] = None,
+        as_dict: bool = False,
     ) -&gt; None:
         &#34;&#34;&#34;
         Args:
             pages (List[int], optional): Pages to scrape data from. Defaults to [1].
             ratelimit (int, optional): Ratelimit for parsing each page. Defaults to 2 seconds.
             proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
+            as_dict (bool): Return the data as a dictionary. Defaults to False.
         &#34;&#34;&#34;
         super().__init__(proxy)
         self.base_url = &#34;https://coinmarketcap.com/?page=&#34;
         self.ratelimit = ratelimit
         self.pages = pages
+        self.out = as_dict
 
     @property
-    def get_data(self) -&gt; Dict[int, Dict[int, Dict[str, Any]]]:
+    def get_data(
+        self,
+    ) -&gt; Union[Dict[int, Dict[int, Dict[str, Any]]], Dict[int, Dict[int, RankingData]]]:
         &#34;&#34;&#34;Get a dictionary of cryptocurrency ranks with page number as keys
         and rankings as values.
 
         Returns:
-            Dict[int, Dict[int, Dict[str, Any]]]: Cryptocurrency rankings of all pages.
+            Union[Dict[int, Dict[int, Dict[str, Any]]], Dict[int, Dict[int, RankingData]]]: Cryptocurrency rankings of all pages.
         &#34;&#34;&#34;
-        ranks: Dict[int, Dict[int, Dict[str, Any]]] = {}
+        ranks: Dict[int, Dict[int, Any]] = {}
         for page in self.pages:
             start_rank = (page - 1) * 100
             page_data = self.__get_page_data(page)
@@ -267,10 +290,10 @@ contains &lt;= 100 cryptocurrencies.</p>
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.base_url + str(page))
-        driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
-        time.sleep(1)
         try:
+            driver.get(self.base_url + str(page))
+            driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
+            time.sleep(1)
             result = driver.find_element(
                 By.XPATH,
                 &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div/div[5]/table/tbody&#39;,
@@ -286,7 +309,7 @@ contains &lt;= 100 cryptocurrencies.</p>
 
     def __get_cryptocurrency_ranks(
         self, page_data: bs4.element.Tag, start_rank: int
-    ) -&gt; Dict[int, Dict[str, Any]]:
+    ) -&gt; Union[Dict[int, Dict[str, Any]], Dict[int, RankingData]]:
         &#34;&#34;&#34;Scrape cryptocurrency names and ranks from data returned by
         the __get_page_data() method.
 
@@ -295,9 +318,9 @@ contains &lt;= 100 cryptocurrencies.</p>
             start_rank (int): Rank to start storing from.
 
         Returns:
-            Dict[int, Dict[str, Dict[str, Any]]]: Cryptocurrency rankings of the current page.
+            Union[Dict[int, Dict[str, Any]], Dict[int, RankingData]]: Cryptocurrency rankings of the current page.
         &#34;&#34;&#34;
-        cryptocurrency_ranking: Dict[int, Dict[str, Any]] = {}
+        cryptocurrency_ranking: Dict[int, Any] = {}
         data = page_data.find_all(&#34;tr&#34;)
         for rank, content in enumerate(data):
             td = content.find_all(&#34;td&#34;)[2]
@@ -314,13 +337,17 @@ contains &lt;= 100 cryptocurrencies.</p>
             except:
                 symbol: str = td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;).find(&#34;span&#34;, class_=&#34;crypto-symbol&#34;).text  # type: ignore
             cmc_link: str = td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;)[&#34;href&#34;]
-            cryptocurrency_ranking[start_rank + rank + 1] = {
+            result = {
                 &#34;name&#34;: name,
                 &#34;symbol&#34;: symbol,
                 &#34;cmc_name&#34;: cmc_link.split(&#34;/&#34;)[-2],
                 &#34;url&#34;: self.cmc_url + cmc_link,
                 &#34;timestamp&#34;: datetime.now(),
             }
+            if self.out:
+                cryptocurrency_ranking[start_rank + rank + 1] = result
+            else:
+                cryptocurrency_ranking[start_rank + rank + 1] = RankingData(**result)
         return cryptocurrency_ranking</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -329,13 +356,13 @@ contains &lt;= 100 cryptocurrencies.</p>
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="cmc.modules.cryptocurrency.ranking.Ranking.get_data"><code class="name">var <span class="ident">get_data</span> : Dict[int, Dict[int, Dict[str, Any]]]</code></dt>
+<dt id="cmc.modules.cryptocurrency.ranking.Ranking.get_data"><code class="name">var <span class="ident">get_data</span> : Union[Dict[int, Dict[int, Dict[str, Any]]], Dict[int, Dict[int, <a title="cmc.utils.models.RankingData" href="../../utils/models.html#cmc.utils.models.RankingData">RankingData</a>]]]</code></dt>
 <dd>
 <div class="desc"><p>Get a dictionary of cryptocurrency ranks with page number as keys
 and rankings as values.</p>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict[int, Dict[int, Dict[str, Any]]]</code></dt>
+<dt><code>Union[Dict[int, Dict[int, Dict[str, Any]]], Dict[int, Dict[int, RankingData]]]</code></dt>
 <dd>Cryptocurrency rankings of all pages.</dd>
 </dl></div>
 <details class="source">
@@ -343,14 +370,16 @@ and rankings as values.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def get_data(self) -&gt; Dict[int, Dict[int, Dict[str, Any]]]:
+def get_data(
+    self,
+) -&gt; Union[Dict[int, Dict[int, Dict[str, Any]]], Dict[int, Dict[int, RankingData]]]:
     &#34;&#34;&#34;Get a dictionary of cryptocurrency ranks with page number as keys
     and rankings as values.
 
     Returns:
-        Dict[int, Dict[int, Dict[str, Any]]]: Cryptocurrency rankings of all pages.
+        Union[Dict[int, Dict[int, Dict[str, Any]]], Dict[int, Dict[int, RankingData]]]: Cryptocurrency rankings of all pages.
     &#34;&#34;&#34;
-    ranks: Dict[int, Dict[int, Dict[str, Any]]] = {}
+    ranks: Dict[int, Dict[int, Any]] = {}
     for page in self.pages:
         start_rank = (page - 1) * 100
         page_data = self.__get_page_data(page)

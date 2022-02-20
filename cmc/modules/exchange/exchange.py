@@ -36,15 +36,18 @@ class Exchange(CMCBaseClass):
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.exchange)
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-        time.sleep(1)
-        page_data = driver.page_source
-        driver.quit()
-        if not self.__check_cryptocurrency_url(page_data):
+        try:
+            driver.get(self.exchange)
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+            time.sleep(1)
+            page_data = driver.page_source
+            driver.quit()
+            if not self.__check_cryptocurrency_url(page_data):
+                raise InvalidExchangeURL(self.exchange)
+            soup = BeautifulSoup(page_data, features="lxml")
+            return soup
+        except:
             raise InvalidExchangeURL(self.exchange)
-        soup = BeautifulSoup(page_data, features="lxml")
-        return soup
 
     @property
     def get_data(self) -> Dict[str, Any]:

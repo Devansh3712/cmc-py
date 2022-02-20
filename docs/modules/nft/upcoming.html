@@ -40,6 +40,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
+from cmc.utils.exceptions import ScrapeError
 
 
 class UpcomingSale(CMCBaseClass):
@@ -85,6 +86,9 @@ class UpcomingSale(CMCBaseClass):
         Args:
             page (int): Page to scrape.
 
+        Raises:
+            ScrapeError: Raised when data cannot be scraped from the webpage.
+
         Returns:
             bs4.BeautifulSoup: Scraped website data.
         &#34;&#34;&#34;
@@ -93,17 +97,20 @@ class UpcomingSale(CMCBaseClass):
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.base_url + str(page))
-        driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
-        time.sleep(1)
-        result = driver.find_element(
-            By.XPATH,
-            &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div[2]/div[1]/div/table/tbody&#39;,
-        )
-        page_data = result.get_attribute(&#34;innerHTML&#34;)
-        driver.quit()
-        soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
-        return soup
+        try:
+            driver.get(self.base_url + str(page))
+            driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
+            time.sleep(1)
+            result = driver.find_element(
+                By.XPATH,
+                &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div[2]/div[1]/div/table/tbody&#39;,
+            )
+            page_data = result.get_attribute(&#34;innerHTML&#34;)
+            driver.quit()
+            soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
+            return soup
+        except:
+            raise ScrapeError
 
     def __get_nft_data(
         self, page_data: bs4.element.Tag, start_rank: int
@@ -224,6 +231,9 @@ contains &lt;= 20 NFT collections.</p>
         Args:
             page (int): Page to scrape.
 
+        Raises:
+            ScrapeError: Raised when data cannot be scraped from the webpage.
+
         Returns:
             bs4.BeautifulSoup: Scraped website data.
         &#34;&#34;&#34;
@@ -232,17 +242,20 @@ contains &lt;= 20 NFT collections.</p>
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.base_url + str(page))
-        driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
-        time.sleep(1)
-        result = driver.find_element(
-            By.XPATH,
-            &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div[2]/div[1]/div/table/tbody&#39;,
-        )
-        page_data = result.get_attribute(&#34;innerHTML&#34;)
-        driver.quit()
-        soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
-        return soup
+        try:
+            driver.get(self.base_url + str(page))
+            driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
+            time.sleep(1)
+            result = driver.find_element(
+                By.XPATH,
+                &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div[2]/div[1]/div/table/tbody&#39;,
+            )
+            page_data = result.get_attribute(&#34;innerHTML&#34;)
+            driver.quit()
+            soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
+            return soup
+        except:
+            raise ScrapeError
 
     def __get_nft_data(
         self, page_data: bs4.element.Tag, start_rank: int

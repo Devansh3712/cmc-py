@@ -12,7 +12,7 @@ import os
 import random
 import re
 import time
-from typing import Any, Dict, List, Optional
+from typing import Dict, Optional
 import requests
 from requests.structures import CaseInsensitiveDict
 from selenium import webdriver
@@ -72,13 +72,13 @@ class CMCBaseClass:
         """
         try:
             result = self.session.get(self.__proxy_url_1).json()
-            proxy = result["host"] + ":" + str(result["port"])
+            proxy: str = result["host"] + ":" + str(result["port"])
             time.sleep(1.5)
             return proxy
         except:
             try:
                 result = self.session.get(self.__proxy_url_2).json()  # type: ignore
-                proxy = result["data"][0]["ipPort"]
+                proxy: str = result["data"][0]["ipPort"]  # type: ignore
                 time.sleep(1.5)
                 return proxy
             except:

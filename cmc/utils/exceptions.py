@@ -66,5 +66,12 @@ class InvalidProxy(Exception):
         """
         self.proxy = proxy
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.proxy} is not a valid proxy. The proxies should be in the format IP:Port."
+
+
+class ScrapeError(Exception):
+    """Raised when Selenium is unable to scrape required element from the webpage."""
+
+    def __str__(self):
+        return "Unable to scrape data from https://coinmarketcap.com/"

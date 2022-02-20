@@ -32,20 +32,22 @@
 &#34;&#34;&#34;Module for formatting data returned by cmc-py modules.&#34;&#34;&#34;
 
 import json
-from typing import Any, Dict
+from typing import Any
 
 
-def format_data(data: Dict[Any, Any], indent: int = 4) -&gt; str:
+def format_data(data: Any, indent: int = 4) -&gt; str:
     &#34;&#34;&#34;Format the data dictionary returned by any class of
     the cmc-py modules.
 
     Args:
-        data (Dict[Any, Any]): Data to be formatted.
+        data (Any): Data to be formatted.
         indent (int, optional): Indentation of the data. Defaults to 4.
 
     Returns:
         str: Formatted data.
     &#34;&#34;&#34;
+    if type(data) != dict:
+        data = data.dict()
     result = json.dumps(data, indent=indent, default=str)
     return result</code></pre>
 </details>
@@ -58,14 +60,14 @@ def format_data(data: Dict[Any, Any], indent: int = 4) -&gt; str:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="cmc.utils.format.format_data"><code class="name flex">
-<span>def <span class="ident">format_data</span></span>(<span>data: Dict[Any, Any], indent: int = 4) ‑> str</span>
+<span>def <span class="ident">format_data</span></span>(<span>data: Any, indent: int = 4) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Format the data dictionary returned by any class of
 the cmc-py modules.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>data</code></strong> :&ensp;<code>Dict[Any, Any]</code></dt>
+<dt><strong><code>data</code></strong> :&ensp;<code>Any</code></dt>
 <dd>Data to be formatted.</dd>
 <dt><strong><code>indent</code></strong> :&ensp;<code>int</code>, optional</dt>
 <dd>Indentation of the data. Defaults to 4.</dd>
@@ -79,17 +81,19 @@ the cmc-py modules.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def format_data(data: Dict[Any, Any], indent: int = 4) -&gt; str:
+<pre><code class="python">def format_data(data: Any, indent: int = 4) -&gt; str:
     &#34;&#34;&#34;Format the data dictionary returned by any class of
     the cmc-py modules.
 
     Args:
-        data (Dict[Any, Any]): Data to be formatted.
+        data (Any): Data to be formatted.
         indent (int, optional): Indentation of the data. Defaults to 4.
 
     Returns:
         str: Formatted data.
     &#34;&#34;&#34;
+    if type(data) != dict:
+        data = data.dict()
     result = json.dumps(data, indent=indent, default=str)
     return result</code></pre>
 </details>

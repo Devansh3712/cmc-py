@@ -19,7 +19,21 @@ from cmc.utils.exceptions import (
     InvalidPageURL,
     InvalidCryptoCurrencyURL,
     InvalidExchangeURL,
-    ProxyTimeOut,
-    InvalidProxy,
 )
 from cmc.utils.format import format_data
+from cmc.utils.models import (
+    CryptoCurrencyData,
+    MostVisitedData,
+    TopGainersData,
+    TopLosersData,
+    TrendingData,
+    RankingData,
+    RecentlyAddedData,
+    ExchangeData,
+    DerivativesData,
+    DexData,
+    LendingData,
+    SpotData,
+    NFTRankingData,
+    UpcomingSaleData,
+)

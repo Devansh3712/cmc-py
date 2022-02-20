@@ -95,8 +95,15 @@ class InvalidProxy(Exception):
         &#34;&#34;&#34;
         self.proxy = proxy
 
+    def __str__(self) -&gt; str:
+        return f&#34;{self.proxy} is not a valid proxy. The proxies should be in the format IP:Port.&#34;
+
+
+class ScrapeError(Exception):
+    &#34;&#34;&#34;Raised when Selenium is unable to scrape required element from the webpage.&#34;&#34;&#34;
+
     def __str__(self):
-        return f&#34;{self.proxy} is not a valid proxy. The proxies should be in the format IP:Port.&#34;</code></pre>
+        return &#34;Unable to scrape data from https://coinmarketcap.com/&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -239,7 +246,7 @@ CoinMarketCap website.</p>
         &#34;&#34;&#34;
         self.proxy = proxy
 
-    def __str__(self):
+    def __str__(self) -&gt; str:
         return f&#34;{self.proxy} is not a valid proxy. The proxies should be in the format IP:Port.&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -265,6 +272,28 @@ CoinMarketCap website.</p>
         return (
             &#34;A proxy could not be fetched from the API, try again after a few seconds.&#34;
         )</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="cmc.utils.exceptions.ScrapeError"><code class="flex name class">
+<span>class <span class="ident">ScrapeError</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raised when Selenium is unable to scrape required element from the webpage.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ScrapeError(Exception):
+    &#34;&#34;&#34;Raised when Selenium is unable to scrape required element from the webpage.&#34;&#34;&#34;
+
+    def __str__(self):
+        return &#34;Unable to scrape data from https://coinmarketcap.com/&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -302,6 +331,9 @@ CoinMarketCap website.</p>
 </li>
 <li>
 <h4><code><a title="cmc.utils.exceptions.ProxyTimeOut" href="#cmc.utils.exceptions.ProxyTimeOut">ProxyTimeOut</a></code></h4>
+</li>
+<li>
+<h4><code><a title="cmc.utils.exceptions.ScrapeError" href="#cmc.utils.exceptions.ScrapeError">ScrapeError</a></code></h4>
 </li>
 </ul>
 </li>

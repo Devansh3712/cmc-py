@@ -35,8 +35,8 @@ async def cryptocurrency(name: str):
     try:
         if redis.check_data(name):
             return redis.get_data(name)
-        result = CryptoCurrency(name).get_data
-        redis.add_data(name, result)
+        result = CryptoCurrency(name, as_dict=True).get_data
+        redis.add_data(name, result)  # type: ignore
         return result
     except InvalidCryptoCurrencyURL as error:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(error))
@@ -47,7 +47,7 @@ async def most_visited():
     try:
         if redis.check_data("mostvisited"):
             return redis.get_data("mostvisited")
-        result = MostVisited().get_data
+        result = MostVisited(as_dict=True).get_data
         redis.add_data("mostvisited", result)
         return result
     except:
@@ -61,7 +61,7 @@ async def top_gainers():
     try:
         if redis.check_data("topgainers"):
             return redis.get_data("topgainers")
-        result = TopGainers().get_data
+        result = TopGainers(as_dict=True).get_data
         redis.add_data("topgainers", result)
         return result
     except:
@@ -75,7 +75,7 @@ async def top_losers():
     try:
         if redis.check_data("toplosers"):
             return redis.get_data("toplosers")
-        result = TopLosers().get_data
+        result = TopLosers(as_dict=True).get_data
         redis.add_data("toplosers", result)
         return result
     except:
@@ -89,7 +89,7 @@ async def trending():
     try:
         if redis.check_data("trending"):
             return redis.get_data("trending")
-        result = Trending().get_data
+        result = Trending(as_dict=True).get_data
         redis.add_data("trending", result)
         return result
     except:
@@ -101,7 +101,7 @@ async def trending():
 @router.get("/ranking", response_model=Dict[int, Dict[int, RankingData]])
 async def ranking(pages: List[int] = Query([1])):
     try:
-        result = Ranking(pages).get_data
+        result = Ranking(pages=pages, as_dict=True).get_data
         return result
     except InvalidPageURL as error:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(error))
@@ -112,7 +112,7 @@ async def recently_added():
     try:
         if redis.check_data("recentlyadded"):
             return redis.get_data("recentlyadded")
-        result = RecentlyAdded().get_data
+        result = RecentlyAdded(as_dict=True).get_data
         redis.add_data("recentlyadded", result)
         return result
     except:

@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
+from cmc.utils.exceptions import ScrapeError
 
 
 class Dex(CMCBaseClass):
@@ -30,6 +31,9 @@ class Dex(CMCBaseClass):
         """Scrape the table from top dex exchanges page data and return
         the scraped data.
 
+        Raises:
+            ScrapeError: Raised when data cannot be scraped from the webpage.
+
         Returns:
             bs4.BeautifulSoup: Scraped page data.
         """
@@ -38,17 +42,20 @@ class Dex(CMCBaseClass):
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.base_url)
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-        time.sleep(1)
-        result = driver.find_element(
-            By.XPATH,
-            '//*[@id="__next"]/div/div[1]/div[2]/div/div/div[2]/table/tbody',
-        )
-        page_data = result.get_attribute("innerHTML")
-        driver.quit()
-        soup = BeautifulSoup(page_data, features="lxml")
-        return soup
+        try:
+            driver.get(self.base_url)
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+            time.sleep(1)
+            result = driver.find_element(
+                By.XPATH,
+                '//*[@id="__next"]/div/div[1]/div[2]/div/div/div[2]/table/tbody',
+            )
+            page_data = result.get_attribute("innerHTML")
+            driver.quit()
+            soup = BeautifulSoup(page_data, features="lxml")
+            return soup
+        except:
+            raise ScrapeError
 
     @property
     def get_data(self) -> Dict[int, Dict[str, Any]]:

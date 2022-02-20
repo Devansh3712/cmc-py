@@ -6,30 +6,37 @@ added in the last 24 hours on CoinMarketCap website."""
 from datetime import datetime
 import os
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 import bs4
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
+from cmc.utils.exceptions import ScrapeError
+from cmc.utils.models import RecentlyAddedData
 
 
 class RecentlyAdded(CMCBaseClass):
     """Class for scraping the data of CryptoCurrencies that appear
     in the recently added table."""
 
-    def __init__(self, proxy: Optional[str] = None) -> None:
+    def __init__(self, proxy: Optional[str] = None, as_dict: bool = False) -> None:
         """
         Args:
             proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
+            as_dict (bool): Return the data as a dictionary. Defaults to False.
         """
         super().__init__(proxy)
         self.base_url = "https://coinmarketcap.com/new/"
+        self.out = as_dict
 
     @property
     def __get_page_data(self) -> bs4.BeautifulSoup:
         """Scrape the table from recently added CryptoCurrencies page data
         and return the scraped data.
+
+        Raises:
+            ScrapeError: Raised when data cannot be scraped from the webpage.
 
         Returns:
             bs4.BeautifulSoup: Scraped page data.
@@ -39,27 +46,32 @@ class RecentlyAdded(CMCBaseClass):
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.base_url)
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-        time.sleep(1)
-        result = driver.find_element(
-            By.XPATH,
-            '//*[@id="__next"]/div/div[1]/div[2]/div/div[2]/table/tbody',
-        )
-        page_data = result.get_attribute("innerHTML")
-        driver.quit()
-        soup = BeautifulSoup(page_data, features="lxml")
-        return soup
+        try:
+            driver.get(self.base_url)
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+            time.sleep(1)
+            result = driver.find_element(
+                By.XPATH,
+                '//*[@id="__next"]/div/div[1]/div[2]/div/div[2]/table/tbody',
+            )
+            page_data = result.get_attribute("innerHTML")
+            driver.quit()
+            soup = BeautifulSoup(page_data, features="lxml")
+            return soup
+        except:
+            raise ScrapeError
 
     @property
-    def get_data(self) -> Dict[int, Dict[str, Any]]:
+    def get_data(
+        self,
+    ) -> Union[Dict[int, Dict[str, Any]], Dict[int, RecentlyAddedData]]:
         """Scrape the CryptoCurrencies which are recently added in the
         last 24 hours.
 
         Returns:
-            Dict[str, Any]: Scraped data of trending CryptoCurrencies.
+            Union[Dict[int, Dict[str, Any]], Dict[int, RecentlyAddedData]]: Scraped data of trending CryptoCurrencies.
         """
-        recently_added: Dict[int, Dict[str, Any]] = {}
+        recently_added: Dict[int, Any] = {}
         page_data = self.__get_page_data
         data = page_data.find_all("tr")
         for num, content in enumerate(data):
@@ -99,7 +111,7 @@ class RecentlyAdded(CMCBaseClass):
             volume_24h: str = td[7].text
             blockchain: str = td[8].find("div", class_="s8fs2i-2 TBaWj").text
             added: str = td[9].text
-            recently_added[num + 1] = {
+            result = {
                 "name": name,
                 "symbol": symbol,
                 "cmc_name": cmc_link.split("/")[-2],
@@ -113,4 +125,8 @@ class RecentlyAdded(CMCBaseClass):
                 "added": added,
                 "timestamp": datetime.now(),
             }
+            if self.out:
+                recently_added[num + 1] = result
+            else:
+                recently_added[num + 1] = RecentlyAddedData(**result)
         return recently_added

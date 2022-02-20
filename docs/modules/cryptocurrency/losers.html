@@ -37,30 +37,37 @@ in the last 24 hours on CoinMarketCap website.&#34;&#34;&#34;
 from datetime import datetime
 import os
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 import bs4
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
+from cmc.utils.exceptions import ScrapeError
+from cmc.utils.models import TopLosersData
 
 
 class TopLosers(CMCBaseClass):
     &#34;&#34;&#34;Class for scraping the data of CryptoCurrencies that appear
     in the top losers table.&#34;&#34;&#34;
 
-    def __init__(self, proxy: Optional[str] = None) -&gt; None:
+    def __init__(self, proxy: Optional[str] = None, as_dict: bool = False) -&gt; None:
         &#34;&#34;&#34;
         Args:
             proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
+            as_dict (bool): Return the data as a dictionary. Defaults to False.
         &#34;&#34;&#34;
         super().__init__(proxy)
         self.base_url = &#34;https://coinmarketcap.com/gainers-losers/&#34;
+        self.out = as_dict
 
     @property
     def __get_page_data(self) -&gt; bs4.BeautifulSoup:
         &#34;&#34;&#34;Scrape the losers table from gainers-losers page data
         and return the scraped data.
+
+        Raises:
+            ScrapeError: Raised when data cannot be scraped from the webpage.
 
         Returns:
             bs4.BeautifulSoup: Scraped page data.
@@ -70,27 +77,30 @@ class TopLosers(CMCBaseClass):
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.base_url)
-        driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
-        time.sleep(1)
-        result = driver.find_element(
-            By.XPATH,
-            &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div[2]/div/div[2]/div/table/tbody&#39;,
-        )
-        page_data = result.get_attribute(&#34;innerHTML&#34;)
-        driver.quit()
-        soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
-        return soup
+        try:
+            driver.get(self.base_url)
+            driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
+            time.sleep(1)
+            result = driver.find_element(
+                By.XPATH,
+                &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div[2]/div/div[2]/div/table/tbody&#39;,
+            )
+            page_data = result.get_attribute(&#34;innerHTML&#34;)
+            driver.quit()
+            soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
+            return soup
+        except:
+            raise ScrapeError
 
     @property
-    def get_data(self) -&gt; Dict[int, Dict[str, Any]]:
+    def get_data(self) -&gt; Union[Dict[int, Dict[str, Any]], Dict[int, TopLosersData]]:
         &#34;&#34;&#34;Scrape the CryptoCurrencies which are the top losers in the
         last 24 hours.
 
         Returns:
             Dict[int, Dict[str, Any]]: Scraped data of top losing CryptoCurrencies.
         &#34;&#34;&#34;
-        top_losers: Dict[int, Dict[str, Any]] = {}
+        top_losers: Dict[int, Any] = {}
         page_data = self.__get_page_data
         data = page_data.find_all(&#34;tr&#34;)
         for num, content in enumerate(data):
@@ -104,7 +114,7 @@ class TopLosers(CMCBaseClass):
             price: str = td[2].span.text
             percentage: str = td[3].find(&#34;span&#34;, class_=&#34;sc-15yy2pl-0 hzgCfk&#34;).text
             volume_24h: str = td[4].text
-            top_losers[num + 1] = {
+            result = {
                 &#34;name&#34;: name,
                 &#34;symbol&#34;: symbol,
                 &#34;rank&#34;: rank,
@@ -115,6 +125,10 @@ class TopLosers(CMCBaseClass):
                 &#34;volume_24h&#34;: volume_24h,
                 &#34;timestamp&#34;: datetime.now(),
             }
+            if self.out:
+                top_losers[num + 1] = result
+            else:
+                top_losers[num + 1] = TopLosersData(**result)
         return top_losers</code></pre>
 </details>
 </section>
@@ -129,7 +143,7 @@ class TopLosers(CMCBaseClass):
 <dl>
 <dt id="cmc.modules.cryptocurrency.losers.TopLosers"><code class="flex name class">
 <span>class <span class="ident">TopLosers</span></span>
-<span>(</span><span>proxy: Optional[str] = None)</span>
+<span>(</span><span>proxy: Optional[str] = None, as_dict: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class for scraping the data of CryptoCurrencies that appear
@@ -138,6 +152,8 @@ in the top losers table.</p>
 <dl>
 <dt><strong><code>proxy</code></strong> :&ensp;<code>Optional[str]</code>, optional</dt>
 <dd>Proxy to be used for Selenium and requests Session. Defaults to None.</dd>
+<dt><strong><code>as_dict</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Return the data as a dictionary. Defaults to False.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -147,18 +163,23 @@ in the top losers table.</p>
     &#34;&#34;&#34;Class for scraping the data of CryptoCurrencies that appear
     in the top losers table.&#34;&#34;&#34;
 
-    def __init__(self, proxy: Optional[str] = None) -&gt; None:
+    def __init__(self, proxy: Optional[str] = None, as_dict: bool = False) -&gt; None:
         &#34;&#34;&#34;
         Args:
             proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
+            as_dict (bool): Return the data as a dictionary. Defaults to False.
         &#34;&#34;&#34;
         super().__init__(proxy)
         self.base_url = &#34;https://coinmarketcap.com/gainers-losers/&#34;
+        self.out = as_dict
 
     @property
     def __get_page_data(self) -&gt; bs4.BeautifulSoup:
         &#34;&#34;&#34;Scrape the losers table from gainers-losers page data
         and return the scraped data.
+
+        Raises:
+            ScrapeError: Raised when data cannot be scraped from the webpage.
 
         Returns:
             bs4.BeautifulSoup: Scraped page data.
@@ -168,27 +189,30 @@ in the top losers table.</p>
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.base_url)
-        driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
-        time.sleep(1)
-        result = driver.find_element(
-            By.XPATH,
-            &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div[2]/div/div[2]/div/table/tbody&#39;,
-        )
-        page_data = result.get_attribute(&#34;innerHTML&#34;)
-        driver.quit()
-        soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
-        return soup
+        try:
+            driver.get(self.base_url)
+            driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
+            time.sleep(1)
+            result = driver.find_element(
+                By.XPATH,
+                &#39;//*[@id=&#34;__next&#34;]/div/div[1]/div[2]/div/div[2]/div/div[2]/div/table/tbody&#39;,
+            )
+            page_data = result.get_attribute(&#34;innerHTML&#34;)
+            driver.quit()
+            soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
+            return soup
+        except:
+            raise ScrapeError
 
     @property
-    def get_data(self) -&gt; Dict[int, Dict[str, Any]]:
+    def get_data(self) -&gt; Union[Dict[int, Dict[str, Any]], Dict[int, TopLosersData]]:
         &#34;&#34;&#34;Scrape the CryptoCurrencies which are the top losers in the
         last 24 hours.
 
         Returns:
             Dict[int, Dict[str, Any]]: Scraped data of top losing CryptoCurrencies.
         &#34;&#34;&#34;
-        top_losers: Dict[int, Dict[str, Any]] = {}
+        top_losers: Dict[int, Any] = {}
         page_data = self.__get_page_data
         data = page_data.find_all(&#34;tr&#34;)
         for num, content in enumerate(data):
@@ -202,7 +226,7 @@ in the top losers table.</p>
             price: str = td[2].span.text
             percentage: str = td[3].find(&#34;span&#34;, class_=&#34;sc-15yy2pl-0 hzgCfk&#34;).text
             volume_24h: str = td[4].text
-            top_losers[num + 1] = {
+            result = {
                 &#34;name&#34;: name,
                 &#34;symbol&#34;: symbol,
                 &#34;rank&#34;: rank,
@@ -213,6 +237,10 @@ in the top losers table.</p>
                 &#34;volume_24h&#34;: volume_24h,
                 &#34;timestamp&#34;: datetime.now(),
             }
+            if self.out:
+                top_losers[num + 1] = result
+            else:
+                top_losers[num + 1] = TopLosersData(**result)
         return top_losers</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -221,7 +249,7 @@ in the top losers table.</p>
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="cmc.modules.cryptocurrency.losers.TopLosers.get_data"><code class="name">var <span class="ident">get_data</span> : Dict[int, Dict[str, Any]]</code></dt>
+<dt id="cmc.modules.cryptocurrency.losers.TopLosers.get_data"><code class="name">var <span class="ident">get_data</span> : Union[Dict[int, Dict[str, Any]], Dict[int, <a title="cmc.utils.models.TopLosersData" href="../../utils/models.html#cmc.utils.models.TopLosersData">TopLosersData</a>]]</code></dt>
 <dd>
 <div class="desc"><p>Scrape the CryptoCurrencies which are the top losers in the
 last 24 hours.</p>
@@ -235,14 +263,14 @@ last 24 hours.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def get_data(self) -&gt; Dict[int, Dict[str, Any]]:
+def get_data(self) -&gt; Union[Dict[int, Dict[str, Any]], Dict[int, TopLosersData]]:
     &#34;&#34;&#34;Scrape the CryptoCurrencies which are the top losers in the
     last 24 hours.
 
     Returns:
         Dict[int, Dict[str, Any]]: Scraped data of top losing CryptoCurrencies.
     &#34;&#34;&#34;
-    top_losers: Dict[int, Dict[str, Any]] = {}
+    top_losers: Dict[int, Any] = {}
     page_data = self.__get_page_data
     data = page_data.find_all(&#34;tr&#34;)
     for num, content in enumerate(data):
@@ -256,7 +284,7 @@ def get_data(self) -&gt; Dict[int, Dict[str, Any]]:
         price: str = td[2].span.text
         percentage: str = td[3].find(&#34;span&#34;, class_=&#34;sc-15yy2pl-0 hzgCfk&#34;).text
         volume_24h: str = td[4].text
-        top_losers[num + 1] = {
+        result = {
             &#34;name&#34;: name,
             &#34;symbol&#34;: symbol,
             &#34;rank&#34;: rank,
@@ -267,6 +295,10 @@ def get_data(self) -&gt; Dict[int, Dict[str, Any]]:
             &#34;volume_24h&#34;: volume_24h,
             &#34;timestamp&#34;: datetime.now(),
         }
+        if self.out:
+            top_losers[num + 1] = result
+        else:
+            top_losers[num + 1] = TopLosersData(**result)
     return top_losers</code></pre>
 </details>
 </dd>

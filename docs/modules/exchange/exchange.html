@@ -65,15 +65,18 @@ class Exchange(CMCBaseClass):
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.exchange)
-        driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
-        time.sleep(1)
-        page_data = driver.page_source
-        driver.quit()
-        if not self.__check_cryptocurrency_url(page_data):
+        try:
+            driver.get(self.exchange)
+            driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
+            time.sleep(1)
+            page_data = driver.page_source
+            driver.quit()
+            if not self.__check_cryptocurrency_url(page_data):
+                raise InvalidExchangeURL(self.exchange)
+            soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
+            return soup
+        except:
             raise InvalidExchangeURL(self.exchange)
-        soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
-        return soup
 
     @property
     def get_data(self) -&gt; Dict[str, Any]:
@@ -164,15 +167,18 @@ time the class is called.</p>
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.exchange)
-        driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
-        time.sleep(1)
-        page_data = driver.page_source
-        driver.quit()
-        if not self.__check_cryptocurrency_url(page_data):
+        try:
+            driver.get(self.exchange)
+            driver.execute_script(&#34;window.scrollTo(0, document.body.scrollHeight)&#34;)
+            time.sleep(1)
+            page_data = driver.page_source
+            driver.quit()
+            if not self.__check_cryptocurrency_url(page_data):
+                raise InvalidExchangeURL(self.exchange)
+            soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
+            return soup
+        except:
             raise InvalidExchangeURL(self.exchange)
-        soup = BeautifulSoup(page_data, features=&#34;lxml&#34;)
-        return soup
 
     @property
     def get_data(self) -&gt; Dict[str, Any]:

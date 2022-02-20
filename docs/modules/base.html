@@ -46,7 +46,7 @@ import os
 import random
 import re
 import time
-from typing import Any, Dict, List, Optional
+from typing import Dict, Optional
 import requests
 from requests.structures import CaseInsensitiveDict
 from selenium import webdriver
@@ -106,13 +106,13 @@ class CMCBaseClass:
         &#34;&#34;&#34;
         try:
             result = self.session.get(self.__proxy_url_1).json()
-            proxy = result[&#34;host&#34;] + &#34;:&#34; + str(result[&#34;port&#34;])
+            proxy: str = result[&#34;host&#34;] + &#34;:&#34; + str(result[&#34;port&#34;])
             time.sleep(1.5)
             return proxy
         except:
             try:
                 result = self.session.get(self.__proxy_url_2).json()  # type: ignore
-                proxy = result[&#34;data&#34;][0][&#34;ipPort&#34;]
+                proxy: str = result[&#34;data&#34;][0][&#34;ipPort&#34;]  # type: ignore
                 time.sleep(1.5)
                 return proxy
             except:
@@ -220,13 +220,13 @@ time the class is called.</p>
         &#34;&#34;&#34;
         try:
             result = self.session.get(self.__proxy_url_1).json()
-            proxy = result[&#34;host&#34;] + &#34;:&#34; + str(result[&#34;port&#34;])
+            proxy: str = result[&#34;host&#34;] + &#34;:&#34; + str(result[&#34;port&#34;])
             time.sleep(1.5)
             return proxy
         except:
             try:
                 result = self.session.get(self.__proxy_url_2).json()  # type: ignore
-                proxy = result[&#34;data&#34;][0][&#34;ipPort&#34;]
+                proxy: str = result[&#34;data&#34;][0][&#34;ipPort&#34;]  # type: ignore
                 time.sleep(1.5)
                 return proxy
             except:

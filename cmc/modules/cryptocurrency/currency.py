@@ -5,27 +5,32 @@
 from datetime import datetime
 import os
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 import bs4
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
-from cmc.utils.exceptions import InvalidCryptoCurrencyURL
+from cmc.utils.exceptions import InvalidCryptoCurrencyURL, ScrapeError
+from cmc.utils.models import CryptoCurrencyData
 
 
 class CryptoCurrency(CMCBaseClass):
     """Class for scraping all data of a given CryptoCurrency."""
 
-    def __init__(self, cryptocurrency: str, proxy: Optional[str] = None) -> None:
+    def __init__(
+        self, cryptocurrency: str, proxy: Optional[str] = None, as_dict: bool = False
+    ) -> None:
         """
         Args:
             cryptocurrency (str): Name of Cryptocurrency.
             proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
+            as_dict (bool): Return the data as a dictionary. Defaults to False.
         """
         super().__init__(proxy)
         self.base_url = "https://coinmarketcap.com/currencies/"
         self.cryptocurrency = self.base_url + cryptocurrency
+        self.out = as_dict
 
     @property
     def __get_page_data(self) -> bs4.BeautifulSoup:
@@ -33,6 +38,7 @@ class CryptoCurrency(CMCBaseClass):
         return the scraped data.
 
         Raises:
+            ScrapeError: Raised when data cannot be scraped from the webpage.
             InvalidCryptoCurrencyURL: Raised when the URL is not valid.
 
         Returns:
@@ -43,22 +49,25 @@ class CryptoCurrency(CMCBaseClass):
             options=self.driver_options,
             service_log_path=os.devnull,
         )
-        driver.get(self.cryptocurrency)
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-        time.sleep(1)
-        page_data = driver.page_source
-        driver.quit()
+        try:
+            driver.get(self.cryptocurrency)
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+            time.sleep(1)
+            page_data = driver.page_source
+            driver.quit()
+        except:
+            raise ScrapeError
         if not self.__check_cryptocurrency_url(page_data):
             raise InvalidCryptoCurrencyURL(self.cryptocurrency)
         soup = BeautifulSoup(page_data, features="lxml")
         return soup
 
     @property
-    def get_data(self) -> Dict[str, Any]:
+    def get_data(self) -> Union[Dict[str, Any], CryptoCurrencyData]:
         """Scrape the data of a specific CryptoCurrency.
 
         Returns:
-            Dict[str, Any]: Scraped CryptoCurrency data.
+            Union[Dict[str, Any], CryptoCurrencyData]: Scraped CryptoCurrency data.
         """
         page_data = self.__get_page_data
         name: str = (
@@ -165,7 +174,11 @@ class CryptoCurrency(CMCBaseClass):
             "cmc_url": self.cryptocurrency,
             "timestamp": datetime.now(),
         }
-        return cryptocurrency_data
+        if self.out:
+            return cryptocurrency_data
+        else:
+            result = CryptoCurrencyData(**cryptocurrency_data)
+            return result
 
     def __check_cryptocurrency_url(self, page_data: str) -> bool:
         """Check whether a webpage for the CryptoCurrency exists
