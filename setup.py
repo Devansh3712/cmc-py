@@ -56,7 +56,7 @@ if __name__ == "__main__":
             "sniffio==1.2.0",
             "sortedcontainers==2.4.0",
             "soupsieve==2.3.1",
-            "trio==0.19.0",
+            "trio==0.20.0",
             "trio-websocket==0.9.2",
             "urllib3==1.26.8",
             "webdriver-manager==3.5.3",
