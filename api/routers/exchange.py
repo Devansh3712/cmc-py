@@ -23,8 +23,8 @@ async def exchange(name: str):
     try:
         if redis.check_data(name):
             return redis.get_data(name)
-        result = Exchange(name).get_data
-        redis.add_data(name, result)
+        result = Exchange(name, as_dict=True).get_data
+        redis.add_data(name, result)  # type: ignore
         return result
     except InvalidExchangeURL as error:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(error))
@@ -35,7 +35,7 @@ async def derivatives():
     try:
         if redis.check_data("derivatives"):
             return redis.get_data("derivatives")
-        result = Derivatives().get_data
+        result = Derivatives(as_dict=True).get_data
         redis.add_data("derivatives", result)
         return result
     except:
@@ -49,7 +49,7 @@ async def dex():
     try:
         if redis.check_data("dex"):
             return redis.get_data("dex")
-        result = Dex().get_data
+        result = Dex(as_dict=True).get_data
         redis.add_data("dex", result)
         return result
     except:
@@ -63,7 +63,7 @@ async def lending():
     try:
         if redis.check_data("lending"):
             return redis.get_data("lending")
-        result = Lending().get_data
+        result = Lending(as_dict=True).get_data
         redis.add_data("lending", result)
         return result
     except:
@@ -77,7 +77,7 @@ async def spot():
     try:
         if redis.check_data("spot"):
             return redis.get_data("spot")
-        result = Spot().get_data
+        result = Spot(as_dict=True).get_data
         redis.add_data("spot", result)
         return result
     except:

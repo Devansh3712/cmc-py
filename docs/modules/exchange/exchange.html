@@ -34,20 +34,30 @@
 from datetime import datetime
 import os
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 import bs4
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
 from cmc.utils.exceptions import InvalidExchangeURL
+from cmc.utils.models import ExchangeData
 
 
 class Exchange(CMCBaseClass):
-    def __init__(self, exchange: str, proxy: Optional[str] = None) -&gt; None:
+    def __init__(
+        self, exchange: str, proxy: Optional[str] = None, as_dict: bool = False
+    ) -&gt; None:
+        &#34;&#34;&#34;
+        Args:
+            exchange (str): Name of the exchange.
+            proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
+            as_dict (bool): Return the data as a dictionary. Defaults to False.
+        &#34;&#34;&#34;
         super().__init__(proxy)
         self.base_url = &#34;https://coinmarketcap.com/exchanges/&#34;
         self.exchange = self.base_url + exchange
+        self.out = as_dict
 
     @property
     def __get_page_data(self) -&gt; bs4.BeautifulSoup:
@@ -79,11 +89,11 @@ class Exchange(CMCBaseClass):
             raise InvalidExchangeURL(self.exchange)
 
     @property
-    def get_data(self) -&gt; Dict[str, Any]:
+    def get_data(self) -&gt; Union[Dict[str, Any], ExchangeData]:
         &#34;&#34;&#34;Scrape the data of a specific Exchange.
 
         Returns:
-            Dict[str, Any]: Scraped Exchange data.
+            Union[Dict[str, Any], ExchangeData]: Scraped Exchange data.
         &#34;&#34;&#34;
         page_data = self.__get_page_data
         name: str = page_data.find(&#34;h2&#34;, class_=&#34;sc-1q9q90x-0 sc-1xafy60-3 dzkWnG&#34;).text
@@ -101,7 +111,10 @@ class Exchange(CMCBaseClass):
             &#34;cmc_url&#34;: self.exchange,
             &#34;timestamp&#34;: datetime.now(),
         }
-        return exchange_data
+        if self.out:
+            return exchange_data
+        result = ExchangeData(**exchange_data)
+        return result
 
     def __check_cryptocurrency_url(self, page_data: str) -&gt; bool:
         &#34;&#34;&#34;Check whether a webpage for the Exchange exists or not.
@@ -130,7 +143,7 @@ class Exchange(CMCBaseClass):
 <dl>
 <dt id="cmc.modules.exchange.exchange.Exchange"><code class="flex name class">
 <span>class <span class="ident">Exchange</span></span>
-<span>(</span><span>exchange: str, proxy: Optional[str] = None)</span>
+<span>(</span><span>exchange: str, proxy: Optional[str] = None, as_dict: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class for basic Selenium and requests settings for cmc-py
@@ -138,18 +151,31 @@ modules. Sets up a random User-Agent and a random proxy each
 time the class is called.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>proxy</code></strong> :&ensp;<code>Optional[str]</code></dt>
-<dd>Proxy to be used for Selenium and requests Session.</dd>
+<dt><strong><code>exchange</code></strong> :&ensp;<code>str</code></dt>
+<dd>Name of the exchange.</dd>
+<dt><strong><code>proxy</code></strong> :&ensp;<code>Optional[str]</code>, optional</dt>
+<dd>Proxy to be used for Selenium and requests Session. Defaults to None.</dd>
+<dt><strong><code>as_dict</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Return the data as a dictionary. Defaults to False.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Exchange(CMCBaseClass):
-    def __init__(self, exchange: str, proxy: Optional[str] = None) -&gt; None:
+    def __init__(
+        self, exchange: str, proxy: Optional[str] = None, as_dict: bool = False
+    ) -&gt; None:
+        &#34;&#34;&#34;
+        Args:
+            exchange (str): Name of the exchange.
+            proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
+            as_dict (bool): Return the data as a dictionary. Defaults to False.
+        &#34;&#34;&#34;
         super().__init__(proxy)
         self.base_url = &#34;https://coinmarketcap.com/exchanges/&#34;
         self.exchange = self.base_url + exchange
+        self.out = as_dict
 
     @property
     def __get_page_data(self) -&gt; bs4.BeautifulSoup:
@@ -181,11 +207,11 @@ time the class is called.</p>
             raise InvalidExchangeURL(self.exchange)
 
     @property
-    def get_data(self) -&gt; Dict[str, Any]:
+    def get_data(self) -&gt; Union[Dict[str, Any], ExchangeData]:
         &#34;&#34;&#34;Scrape the data of a specific Exchange.
 
         Returns:
-            Dict[str, Any]: Scraped Exchange data.
+            Union[Dict[str, Any], ExchangeData]: Scraped Exchange data.
         &#34;&#34;&#34;
         page_data = self.__get_page_data
         name: str = page_data.find(&#34;h2&#34;, class_=&#34;sc-1q9q90x-0 sc-1xafy60-3 dzkWnG&#34;).text
@@ -203,7 +229,10 @@ time the class is called.</p>
             &#34;cmc_url&#34;: self.exchange,
             &#34;timestamp&#34;: datetime.now(),
         }
-        return exchange_data
+        if self.out:
+            return exchange_data
+        result = ExchangeData(**exchange_data)
+        return result
 
     def __check_cryptocurrency_url(self, page_data: str) -&gt; bool:
         &#34;&#34;&#34;Check whether a webpage for the Exchange exists or not.
@@ -226,12 +255,12 @@ time the class is called.</p>
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="cmc.modules.exchange.exchange.Exchange.get_data"><code class="name">var <span class="ident">get_data</span> : Dict[str, Any]</code></dt>
+<dt id="cmc.modules.exchange.exchange.Exchange.get_data"><code class="name">var <span class="ident">get_data</span> : Union[Dict[str, Any], <a title="cmc.utils.models.ExchangeData" href="../../utils/models.html#cmc.utils.models.ExchangeData">ExchangeData</a>]</code></dt>
 <dd>
 <div class="desc"><p>Scrape the data of a specific Exchange.</p>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict[str, Any]</code></dt>
+<dt><code>Union[Dict[str, Any], ExchangeData]</code></dt>
 <dd>Scraped Exchange data.</dd>
 </dl></div>
 <details class="source">
@@ -239,11 +268,11 @@ time the class is called.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def get_data(self) -&gt; Dict[str, Any]:
+def get_data(self) -&gt; Union[Dict[str, Any], ExchangeData]:
     &#34;&#34;&#34;Scrape the data of a specific Exchange.
 
     Returns:
-        Dict[str, Any]: Scraped Exchange data.
+        Union[Dict[str, Any], ExchangeData]: Scraped Exchange data.
     &#34;&#34;&#34;
     page_data = self.__get_page_data
     name: str = page_data.find(&#34;h2&#34;, class_=&#34;sc-1q9q90x-0 sc-1xafy60-3 dzkWnG&#34;).text
@@ -261,7 +290,10 @@ def get_data(self) -&gt; Dict[str, Any]:
         &#34;cmc_url&#34;: self.exchange,
         &#34;timestamp&#34;: datetime.now(),
     }
-    return exchange_data</code></pre>
+    if self.out:
+        return exchange_data
+    result = ExchangeData(**exchange_data)
+    return result</code></pre>
 </details>
 </dd>
 </dl>

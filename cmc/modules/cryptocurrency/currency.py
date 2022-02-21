@@ -176,9 +176,8 @@ class CryptoCurrency(CMCBaseClass):
         }
         if self.out:
             return cryptocurrency_data
-        else:
-            result = CryptoCurrencyData(**cryptocurrency_data)
-            return result
+        result = CryptoCurrencyData(**cryptocurrency_data)
+        return result
 
     def __check_cryptocurrency_url(self, page_data: str) -> bool:
         """Check whether a webpage for the CryptoCurrency exists

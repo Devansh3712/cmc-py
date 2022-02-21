@@ -205,9 +205,8 @@ class CryptoCurrency(CMCBaseClass):
         }
         if self.out:
             return cryptocurrency_data
-        else:
-            result = CryptoCurrencyData(**cryptocurrency_data)
-            return result
+        result = CryptoCurrencyData(**cryptocurrency_data)
+        return result
 
     def __check_cryptocurrency_url(self, page_data: str) -&gt; bool:
         &#34;&#34;&#34;Check whether a webpage for the CryptoCurrency exists
@@ -415,9 +414,8 @@ class CryptoCurrency(CMCBaseClass):
         }
         if self.out:
             return cryptocurrency_data
-        else:
-            result = CryptoCurrencyData(**cryptocurrency_data)
-            return result
+        result = CryptoCurrencyData(**cryptocurrency_data)
+        return result
 
     def __check_cryptocurrency_url(self, page_data: str) -&gt; bool:
         &#34;&#34;&#34;Check whether a webpage for the CryptoCurrency exists
@@ -567,9 +565,8 @@ def get_data(self) -&gt; Union[Dict[str, Any], CryptoCurrencyData]:
     }
     if self.out:
         return cryptocurrency_data
-    else:
-        result = CryptoCurrencyData(**cryptocurrency_data)
-        return result</code></pre>
+    result = CryptoCurrencyData(**cryptocurrency_data)
+    return result</code></pre>
 </details>
 </dd>
 </dl>

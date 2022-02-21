@@ -6,25 +6,28 @@ website."""
 from datetime import datetime
 import os
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 import bs4
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
 from cmc.utils.exceptions import ScrapeError
+from cmc.utils.models import SpotData
 
 
 class Spot(CMCBaseClass):
     """Class for scraping the data of top spot exchanges."""
 
-    def __init__(self, proxy: Optional[str] = None) -> None:
+    def __init__(self, proxy: Optional[str] = None, as_dict: bool = False) -> None:
         """
         Args:
             proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
+            as_dict (bool): Return the data as a dictionary. Defaults to False.
         """
         super().__init__(proxy)
         self.base_url = "https://coinmarketcap.com/rankings/exchanges/"
+        self.out = as_dict
 
     @property
     def __get_page_data(self) -> bs4.BeautifulSoup:
@@ -58,14 +61,14 @@ class Spot(CMCBaseClass):
             raise ScrapeError
 
     @property
-    def get_data(self) -> Dict[int, Dict[str, Any]]:
+    def get_data(self) -> Union[Dict[int, Dict[str, Any]], Dict[int, SpotData]]:
         """Scrape exchanges names and ranks from data returned by
         __get_page_data() method.
 
         Returns:
-            Dict[int, Dict[str, Any]]: Exchange platform rankings.
+            Union[Dict[int, Dict[str, Any]], Dict[int, SpotData]]: Exchange platform rankings.
         """
-        spot: Dict[int, Dict[str, Any]] = {}
+        spot: Dict[int, Any] = {}
         page_data = self.__get_page_data
         data = page_data.find_all("tr")
         for rank, content in enumerate(data):
@@ -75,11 +78,15 @@ class Spot(CMCBaseClass):
             except:
                 name: str = td.text  # type: ignore
             cmc_link: str = td.find("a", class_="cmc-link")["href"]
-            spot[rank + 1] = {
+            result = {
                 "name": name,
                 "cmc_link": cmc_link,
                 "cmc_name": cmc_link.split("/")[-2],
                 "url": self.cmc_url + cmc_link,
                 "timestamp": datetime.now(),
             }
+            if self.out:
+                spot[rank + 1] = result
+            else:
+                spot[rank + 1] = SpotData(**result)
         return spot

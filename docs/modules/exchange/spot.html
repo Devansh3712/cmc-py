@@ -37,25 +37,28 @@ website.&#34;&#34;&#34;
 from datetime import datetime
 import os
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 import bs4
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
 from cmc.utils.exceptions import ScrapeError
+from cmc.utils.models import SpotData
 
 
 class Spot(CMCBaseClass):
     &#34;&#34;&#34;Class for scraping the data of top spot exchanges.&#34;&#34;&#34;
 
-    def __init__(self, proxy: Optional[str] = None) -&gt; None:
+    def __init__(self, proxy: Optional[str] = None, as_dict: bool = False) -&gt; None:
         &#34;&#34;&#34;
         Args:
             proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
+            as_dict (bool): Return the data as a dictionary. Defaults to False.
         &#34;&#34;&#34;
         super().__init__(proxy)
         self.base_url = &#34;https://coinmarketcap.com/rankings/exchanges/&#34;
+        self.out = as_dict
 
     @property
     def __get_page_data(self) -&gt; bs4.BeautifulSoup:
@@ -89,14 +92,14 @@ class Spot(CMCBaseClass):
             raise ScrapeError
 
     @property
-    def get_data(self) -&gt; Dict[int, Dict[str, Any]]:
+    def get_data(self) -&gt; Union[Dict[int, Dict[str, Any]], Dict[int, SpotData]]:
         &#34;&#34;&#34;Scrape exchanges names and ranks from data returned by
         __get_page_data() method.
 
         Returns:
-            Dict[int, Dict[str, Any]]: Exchange platform rankings.
+            Union[Dict[int, Dict[str, Any]], Dict[int, SpotData]]: Exchange platform rankings.
         &#34;&#34;&#34;
-        spot: Dict[int, Dict[str, Any]] = {}
+        spot: Dict[int, Any] = {}
         page_data = self.__get_page_data
         data = page_data.find_all(&#34;tr&#34;)
         for rank, content in enumerate(data):
@@ -106,13 +109,17 @@ class Spot(CMCBaseClass):
             except:
                 name: str = td.text  # type: ignore
             cmc_link: str = td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;)[&#34;href&#34;]
-            spot[rank + 1] = {
+            result = {
                 &#34;name&#34;: name,
                 &#34;cmc_link&#34;: cmc_link,
                 &#34;cmc_name&#34;: cmc_link.split(&#34;/&#34;)[-2],
                 &#34;url&#34;: self.cmc_url + cmc_link,
                 &#34;timestamp&#34;: datetime.now(),
             }
+            if self.out:
+                spot[rank + 1] = result
+            else:
+                spot[rank + 1] = SpotData(**result)
         return spot</code></pre>
 </details>
 </section>
@@ -127,7 +134,7 @@ class Spot(CMCBaseClass):
 <dl>
 <dt id="cmc.modules.exchange.spot.Spot"><code class="flex name class">
 <span>class <span class="ident">Spot</span></span>
-<span>(</span><span>proxy: Optional[str] = None)</span>
+<span>(</span><span>proxy: Optional[str] = None, as_dict: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class for scraping the data of top spot exchanges.</p>
@@ -135,6 +142,8 @@ class Spot(CMCBaseClass):
 <dl>
 <dt><strong><code>proxy</code></strong> :&ensp;<code>Optional[str]</code>, optional</dt>
 <dd>Proxy to be used for Selenium and requests Session. Defaults to None.</dd>
+<dt><strong><code>as_dict</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Return the data as a dictionary. Defaults to False.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -143,13 +152,15 @@ class Spot(CMCBaseClass):
 <pre><code class="python">class Spot(CMCBaseClass):
     &#34;&#34;&#34;Class for scraping the data of top spot exchanges.&#34;&#34;&#34;
 
-    def __init__(self, proxy: Optional[str] = None) -&gt; None:
+    def __init__(self, proxy: Optional[str] = None, as_dict: bool = False) -&gt; None:
         &#34;&#34;&#34;
         Args:
             proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
+            as_dict (bool): Return the data as a dictionary. Defaults to False.
         &#34;&#34;&#34;
         super().__init__(proxy)
         self.base_url = &#34;https://coinmarketcap.com/rankings/exchanges/&#34;
+        self.out = as_dict
 
     @property
     def __get_page_data(self) -&gt; bs4.BeautifulSoup:
@@ -183,14 +194,14 @@ class Spot(CMCBaseClass):
             raise ScrapeError
 
     @property
-    def get_data(self) -&gt; Dict[int, Dict[str, Any]]:
+    def get_data(self) -&gt; Union[Dict[int, Dict[str, Any]], Dict[int, SpotData]]:
         &#34;&#34;&#34;Scrape exchanges names and ranks from data returned by
         __get_page_data() method.
 
         Returns:
-            Dict[int, Dict[str, Any]]: Exchange platform rankings.
+            Union[Dict[int, Dict[str, Any]], Dict[int, SpotData]]: Exchange platform rankings.
         &#34;&#34;&#34;
-        spot: Dict[int, Dict[str, Any]] = {}
+        spot: Dict[int, Any] = {}
         page_data = self.__get_page_data
         data = page_data.find_all(&#34;tr&#34;)
         for rank, content in enumerate(data):
@@ -200,13 +211,17 @@ class Spot(CMCBaseClass):
             except:
                 name: str = td.text  # type: ignore
             cmc_link: str = td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;)[&#34;href&#34;]
-            spot[rank + 1] = {
+            result = {
                 &#34;name&#34;: name,
                 &#34;cmc_link&#34;: cmc_link,
                 &#34;cmc_name&#34;: cmc_link.split(&#34;/&#34;)[-2],
                 &#34;url&#34;: self.cmc_url + cmc_link,
                 &#34;timestamp&#34;: datetime.now(),
             }
+            if self.out:
+                spot[rank + 1] = result
+            else:
+                spot[rank + 1] = SpotData(**result)
         return spot</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -215,13 +230,13 @@ class Spot(CMCBaseClass):
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="cmc.modules.exchange.spot.Spot.get_data"><code class="name">var <span class="ident">get_data</span> : Dict[int, Dict[str, Any]]</code></dt>
+<dt id="cmc.modules.exchange.spot.Spot.get_data"><code class="name">var <span class="ident">get_data</span> : Union[Dict[int, Dict[str, Any]], Dict[int, <a title="cmc.utils.models.SpotData" href="../../utils/models.html#cmc.utils.models.SpotData">SpotData</a>]]</code></dt>
 <dd>
 <div class="desc"><p>Scrape exchanges names and ranks from data returned by
 __get_page_data() method.</p>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict[int, Dict[str, Any]]</code></dt>
+<dt><code>Union[Dict[int, Dict[str, Any]], Dict[int, SpotData]]</code></dt>
 <dd>Exchange platform rankings.</dd>
 </dl></div>
 <details class="source">
@@ -229,14 +244,14 @@ __get_page_data() method.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def get_data(self) -&gt; Dict[int, Dict[str, Any]]:
+def get_data(self) -&gt; Union[Dict[int, Dict[str, Any]], Dict[int, SpotData]]:
     &#34;&#34;&#34;Scrape exchanges names and ranks from data returned by
     __get_page_data() method.
 
     Returns:
-        Dict[int, Dict[str, Any]]: Exchange platform rankings.
+        Union[Dict[int, Dict[str, Any]], Dict[int, SpotData]]: Exchange platform rankings.
     &#34;&#34;&#34;
-    spot: Dict[int, Dict[str, Any]] = {}
+    spot: Dict[int, Any] = {}
     page_data = self.__get_page_data
     data = page_data.find_all(&#34;tr&#34;)
     for rank, content in enumerate(data):
@@ -246,13 +261,17 @@ def get_data(self) -&gt; Dict[int, Dict[str, Any]]:
         except:
             name: str = td.text  # type: ignore
         cmc_link: str = td.find(&#34;a&#34;, class_=&#34;cmc-link&#34;)[&#34;href&#34;]
-        spot[rank + 1] = {
+        result = {
             &#34;name&#34;: name,
             &#34;cmc_link&#34;: cmc_link,
             &#34;cmc_name&#34;: cmc_link.split(&#34;/&#34;)[-2],
             &#34;url&#34;: self.cmc_url + cmc_link,
             &#34;timestamp&#34;: datetime.now(),
         }
+        if self.out:
+            spot[rank + 1] = result
+        else:
+            spot[rank + 1] = SpotData(**result)
     return spot</code></pre>
 </details>
 </dd>

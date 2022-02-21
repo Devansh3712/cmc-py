@@ -5,20 +5,30 @@
 from datetime import datetime
 import os
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 import bs4
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
 from cmc.utils.exceptions import InvalidExchangeURL
+from cmc.utils.models import ExchangeData
 
 
 class Exchange(CMCBaseClass):
-    def __init__(self, exchange: str, proxy: Optional[str] = None) -> None:
+    def __init__(
+        self, exchange: str, proxy: Optional[str] = None, as_dict: bool = False
+    ) -> None:
+        """
+        Args:
+            exchange (str): Name of the exchange.
+            proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
+            as_dict (bool): Return the data as a dictionary. Defaults to False.
+        """
         super().__init__(proxy)
         self.base_url = "https://coinmarketcap.com/exchanges/"
         self.exchange = self.base_url + exchange
+        self.out = as_dict
 
     @property
     def __get_page_data(self) -> bs4.BeautifulSoup:
@@ -50,11 +60,11 @@ class Exchange(CMCBaseClass):
             raise InvalidExchangeURL(self.exchange)
 
     @property
-    def get_data(self) -> Dict[str, Any]:
+    def get_data(self) -> Union[Dict[str, Any], ExchangeData]:
         """Scrape the data of a specific Exchange.
 
         Returns:
-            Dict[str, Any]: Scraped Exchange data.
+            Union[Dict[str, Any], ExchangeData]: Scraped Exchange data.
         """
         page_data = self.__get_page_data
         name: str = page_data.find("h2", class_="sc-1q9q90x-0 sc-1xafy60-3 dzkWnG").text
@@ -72,7 +82,10 @@ class Exchange(CMCBaseClass):
             "cmc_url": self.exchange,
             "timestamp": datetime.now(),
         }
-        return exchange_data
+        if self.out:
+            return exchange_data
+        result = ExchangeData(**exchange_data)
+        return result
 
     def __check_cryptocurrency_url(self, page_data: str) -> bool:
         """Check whether a webpage for the Exchange exists or not.
