@@ -13,7 +13,7 @@ router = APIRouter(prefix="/nft", tags=["NFT"])
 @router.get("/ranking", response_model=Dict[int, Dict[int, NFTRankingData]])
 async def ranking(pages: List[int] = Query([1])):
     try:
-        result = NFTRanking(pages).get_data
+        result = NFTRanking(pages, as_dict=True).get_data
         return result
     except:
         raise HTTPException(
@@ -24,7 +24,7 @@ async def ranking(pages: List[int] = Query([1])):
 @router.get("/upcoming", response_model=Dict[int, Dict[int, UpcomingSaleData]])
 async def upcoming(pages: List[int] = Query([1])):
     try:
-        result = UpcomingSale(pages).get_data
+        result = UpcomingSale(pages, as_dict=True).get_data
         return result
     except:
         raise HTTPException(

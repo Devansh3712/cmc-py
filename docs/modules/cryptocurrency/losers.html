@@ -98,7 +98,7 @@ class TopLosers(CMCBaseClass):
         last 24 hours.
 
         Returns:
-            Dict[int, Dict[str, Any]]: Scraped data of top losing CryptoCurrencies.
+            Union[Dict[int, Dict[str, Any]], Dict[int, TopLosersData]]: Scraped data of top losing CryptoCurrencies.
         &#34;&#34;&#34;
         top_losers: Dict[int, Any] = {}
         page_data = self.__get_page_data
@@ -210,7 +210,7 @@ in the top losers table.</p>
         last 24 hours.
 
         Returns:
-            Dict[int, Dict[str, Any]]: Scraped data of top losing CryptoCurrencies.
+            Union[Dict[int, Dict[str, Any]], Dict[int, TopLosersData]]: Scraped data of top losing CryptoCurrencies.
         &#34;&#34;&#34;
         top_losers: Dict[int, Any] = {}
         page_data = self.__get_page_data
@@ -255,7 +255,7 @@ in the top losers table.</p>
 last 24 hours.</p>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict[int, Dict[str, Any]]</code></dt>
+<dt><code>Union[Dict[int, Dict[str, Any]], Dict[int, TopLosersData]]</code></dt>
 <dd>Scraped data of top losing CryptoCurrencies.</dd>
 </dl></div>
 <details class="source">
@@ -268,7 +268,7 @@ def get_data(self) -&gt; Union[Dict[int, Dict[str, Any]], Dict[int, TopLosersDat
     last 24 hours.
 
     Returns:
-        Dict[int, Dict[str, Any]]: Scraped data of top losing CryptoCurrencies.
+        Union[Dict[int, Dict[str, Any]], Dict[int, TopLosersData]]: Scraped data of top losing CryptoCurrencies.
     &#34;&#34;&#34;
     top_losers: Dict[int, Any] = {}
     page_data = self.__get_page_data

@@ -5,13 +5,14 @@
 from datetime import datetime
 import os
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 import bs4
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
 from cmc.utils.exceptions import ScrapeError
+from cmc.utils.models import NFTRankingData
 
 
 class NFTRanking(CMCBaseClass):
@@ -20,28 +21,38 @@ class NFTRanking(CMCBaseClass):
     """
 
     def __init__(
-        self, pages: List[int] = [1], ratelimit: int = 2, proxy: Optional[str] = None
+        self,
+        pages: List[int] = [1],
+        ratelimit: int = 2,
+        proxy: Optional[str] = None,
+        as_dict: bool = False,
     ) -> None:
         """
         Args:
             pages (List[int], optional): Pages to scrape data from. Defaults to [1].
             ratelimit (int, optional): Ratelimit for parsing each page. Defaults to 2 seconds.
             proxy (Optional[str], optional): Proxy to be used for Selenium and requests Session. Defaults to None.
+            as_dict (bool): Return the data as a dictionary. Defaults to False.
         """
         super().__init__(proxy)
         self.base_url = "https://coinmarketcap.com/nft/collections/?page="
         self.ratelimit = ratelimit
         self.pages = pages
+        self.out = as_dict
 
     @property
-    def get_data(self) -> Dict[int, Dict[int, Dict[str, Any]]]:
+    def get_data(
+        self,
+    ) -> Union[
+        Dict[int, Dict[int, Dict[str, Any]]], Dict[int, Dict[int, NFTRankingData]]
+    ]:
         """Get a dictionary of NFT collection ranks with page number as keys
         and rankings as values.
 
         Returns:
-            Dict[int, Dict[int, Dict[str, Any]]]: NFT collection rankings of all pages.
+            Union[Dict[int, Dict[int, Dict[str, Any]]], Dict[int, Dict[int, NFTRankingData]]]: NFT collection rankings of all pages.
         """
-        ranks: Dict[int, Dict[int, Dict[str, Any]]] = {}
+        ranks: Dict[int, Dict[int, Any]] = {}
         for page in self.pages:
             start_rank = (page - 1) * 100
             page_data = self.__get_page_data(page)
@@ -85,7 +96,7 @@ class NFTRanking(CMCBaseClass):
 
     def __get_nft_ranks(
         self, page_data: bs4.element.Tag, start_rank: int
-    ) -> Dict[int, Dict[str, Any]]:
+    ) -> Union[Dict[int, Dict[str, Any]], Dict[int, NFTRankingData]]:
         """Scrape cryptocurrency names and ranks from data returned by
         the __get_page_data() method.
 
@@ -94,9 +105,9 @@ class NFTRanking(CMCBaseClass):
             start_rank (int): Rank to start storing from.
 
         Returns:
-            Dict[int, Dict[str, Dict[str, Any]]]: NFT collection rankings of the current page.
+            Union[Dict[int, Dict[str, Any]], Dict[int, NFTRankingData]]: NFT collection rankings of the current page.
         """
-        nft_ranking: Dict[int, Dict[str, Any]] = {}
+        nft_ranking: Dict[int, Any] = {}
         data = page_data.find_all("tr")
         for rank, content in enumerate(data):
             td = content.find_all("td")
@@ -104,8 +115,12 @@ class NFTRanking(CMCBaseClass):
                 name: str = td[2].find_all("span")[1].text
             except:
                 name: str = td[1].find("span").text  # type: ignore
-            nft_ranking[start_rank + rank + 1] = {
+            result = {
                 "name": name,
                 "timestamp": datetime.now(),
             }
+            if self.out:
+                nft_ranking[start_rank + rank + 1] = result
+            else:
+                nft_ranking[start_rank + rank + 1] = NFTRankingData(**result)
         return nft_ranking

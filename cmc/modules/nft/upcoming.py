@@ -5,13 +5,14 @@
 from datetime import datetime
 import os
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 import bs4
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from cmc.modules.base import CMCBaseClass
 from cmc.utils.exceptions import ScrapeError
+from cmc.utils.models import UpcomingSaleData
 
 
 class UpcomingSale(CMCBaseClass):
@@ -20,7 +21,11 @@ class UpcomingSale(CMCBaseClass):
     """
 
     def __init__(
-        self, pages: List[int] = [1], ratelimit: int = 2, proxy: Optional[str] = None
+        self,
+        pages: List[int] = [1],
+        ratelimit: int = 2,
+        proxy: Optional[str] = None,
+        as_dict: bool = False,
     ) -> None:
         """
         Args:
@@ -32,16 +37,21 @@ class UpcomingSale(CMCBaseClass):
         self.base_url = "https://coinmarketcap.com/nft/upcoming/?page="
         self.ratelimit = ratelimit
         self.pages = pages
+        self.out = as_dict
 
     @property
-    def get_data(self) -> Dict[int, Dict[int, Dict[str, Any]]]:
+    def get_data(
+        self,
+    ) -> Union[
+        Dict[int, Dict[int, Dict[str, Any]]], Dict[int, Dict[int, UpcomingSaleData]]
+    ]:
         """Get a dictionary of NFT collection ranks with page number as keys
         and rankings as values.
 
         Returns:
-            Dict[int, Dict[int, Dict[str, Any]]]: NFT collection rankings of all pages.
+            Union[Dict[int, Dict[int, Dict[str, Any]]], Dict[int, Dict[int, UpcomingSaleData]]]: NFT collection rankings of all pages.
         """
-        data: Dict[int, Dict[int, Dict[str, Any]]] = {}
+        data: Dict[int, Dict[int, Any]] = {}
         for page in self.pages:
             start_rank = (page - 1) * 20
             page_data = self.__get_page_data(page)
@@ -85,7 +95,7 @@ class UpcomingSale(CMCBaseClass):
 
     def __get_nft_data(
         self, page_data: bs4.element.Tag, start_rank: int
-    ) -> Dict[int, Dict[str, Any]]:
+    ) -> Union[Dict[int, Dict[str, Any]], Dict[int, UpcomingSaleData]]:
         """Scrape upcoming NFTs data from data returned by the
         __get_page_data() method.
 
@@ -94,9 +104,9 @@ class UpcomingSale(CMCBaseClass):
             start_rank (int): Rank to start storing from.
 
         Returns:
-            Dict[int, Dict[str, Dict[str, Any]]]: Upcoming NFT collection on the current page.
+            Union[Dict[int, Dict[str, Any]], Dict[int, UpcomingSaleData]]: Upcoming NFT collection on the current page.
         """
-        nft_data: Dict[int, Dict[str, Any]] = {}
+        nft_data: Dict[int, Any] = {}
         data = page_data.find_all("tr")
         for rank, content in enumerate(data):
             td = content.find_all("td")
@@ -115,7 +125,7 @@ class UpcomingSale(CMCBaseClass):
             except:
                 pre_sale: Optional[str] = None  # type: ignore
                 sale: str = td[3].find("span").text  # type: ignore
-            nft_data[start_rank + rank + 1] = {
+            result = {
                 "name": name,
                 "blockchain": blockchain,
                 "info": info,
@@ -127,4 +137,8 @@ class UpcomingSale(CMCBaseClass):
                 "sale": sale,
                 "timestamp": datetime.now(),
             }
+            if self.out:
+                nft_data[start_rank + rank + 1] = result
+            else:
+                nft_data[start_rank + rank + 1] = UpcomingSaleData(**result)
         return nft_data
