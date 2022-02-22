@@ -120,11 +120,13 @@ class UpcomingSale(CMCBaseClass):
             website: str = td[1].find_all("p")[2].a["href"]
             sale_on: str = td[2].find_all("p")[1].text
             try:
-                pre_sale: Optional[str] = td[2].find_all("span")[0].text
-                sale: str = td[3].find_all("span")[1].text
+                pre_sale: Optional[str] = (
+                    td[3].find_all("span")[0].text.split("Pre-sale: ")[-1]
+                )
+                sale: str = td[3].find_all("span")[1].text.split("Sale: ")[-1]
             except:
                 pre_sale: Optional[str] = None  # type: ignore
-                sale: str = td[3].find("span").text  # type: ignore
+                sale: str = td[3].find("span").text.split("Sale: ")[-1]  # type: ignore
             result = {
                 "name": name,
                 "blockchain": blockchain,
