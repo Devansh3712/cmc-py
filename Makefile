@@ -7,6 +7,10 @@ clean:
 dev:
 	$(PY) -m uvicorn api.main:app --reload
 
+docker:
+	docker build -t cmc .
+	docker compose up
+
 format:
 	$(PY) -m black .
 

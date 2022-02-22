@@ -53,6 +53,7 @@ class CMCBaseClass:
         self.driver_options = webdriver.ChromeOptions()
         self.driver_options.Proxy = self.selenium_proxy
         self.driver_options.add_argument("headless")
+        self.driver_options.add_argument("--no-sandbox")
         self.driver_options.add_argument("--log-level=3")
         self.driver_options.add_argument("ignore-certificate-errors")
         self.driver_options.add_experimental_option(

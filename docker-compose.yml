@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  api:
+    build: .
+    depends_on:
+      - redis
+    ports:
+      - 8000:8000
+  redis:
+    image: redis
+    command: redis-server
+    ports:
+      - 6379:6379
