@@ -4,10 +4,10 @@ services:
   api:
     build: .
     depends_on:
-      - redis
+      - localhost
     ports:
       - 8000:8000
-  redis:
+  localhost:
     image: redis
     command: redis-server
     ports:
