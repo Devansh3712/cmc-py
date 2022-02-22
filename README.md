@@ -47,8 +47,15 @@ print(format_data(upcoming_nft_sales))
 ```
 
 ### API
-An API is also built using the `cmc-py` modules using `FastAPI` and `Redis`. Redis configurations can be set using the `config.yml` file, and it is used to cache the scraped data fetched through `cmc-py`. `Redis` server should be running in the background in order to cache API calls.
+An API is also built using the `cmc-py` modules using `FastAPI` and `Redis`. Redis configurations can be set using the `config.yml` file, and it is used to cache the scraped data fetched through `cmc-py`. `Redis` server should be running in the background in order to cache API calls. An instance of the API is hosted on [Heroku](https://cmc-api.herokuapp.com/docs#/).
 
+- Running the API locally
 ```shell
 uvicorn api.main:app
+```
+
+- Running the API using `docker-compose`
+```shell
+docker build -t cmc .
+docker compose up -d
 ```
