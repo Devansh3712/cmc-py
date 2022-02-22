@@ -54,8 +54,14 @@ An API is also built using the `cmc-py` modules using `FastAPI` and `Redis`. Red
 uvicorn api.main:app
 ```
 
-- Running the API using `docker-compose`
+- Building the API using `Dockerfile`
 ```shell
 docker build -t cmc .
 docker compose up -d
+```
+
+- Running the API using [`Docker Image`](https://hub.docker.com/r/devansh3712/cmc-api)
+```shell
+docker pull devansh3712/cmc-api
+docker run devansh3712/cmc-api
 ```
