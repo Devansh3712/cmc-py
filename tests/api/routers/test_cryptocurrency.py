@@ -116,6 +116,16 @@ def test_trending() -> None:
     assert len(result[str(index)]) == 11
 
 
+def test_price_prediction() -> None:
+    response = client.get(f"/crypto/priceprediction")
+    result = response.json()
+    time.sleep(2)
+    index = random.randint(1, len(result["1"]))
+    assert len(result) == 1
+    assert len(result["1"]) == 10
+    assert len(result["1"][str(index)]) == 11
+
+
 def test_ranking() -> None:
     response = client.get(f"/crypto/ranking")
     result = response.json()

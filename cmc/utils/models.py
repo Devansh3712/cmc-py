@@ -80,6 +80,20 @@ class TrendingData(BaseModel):
     timestamp: datetime
 
 
+class PricePredictionData(BaseModel):
+    name: str
+    symbol: str
+    cmc_name: str
+    url: str
+    accuracy: str
+    price: str
+    price_date: str
+    estimation_median: str
+    estimation_average: str
+    total_estimate: str
+    timestamp: datetime
+
+
 class RankingData(BaseModel):
     name: str
     symbol: str

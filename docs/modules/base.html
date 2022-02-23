@@ -87,6 +87,7 @@ class CMCBaseClass:
         self.driver_options = webdriver.ChromeOptions()
         self.driver_options.Proxy = self.selenium_proxy
         self.driver_options.add_argument(&#34;headless&#34;)
+        self.driver_options.add_argument(&#34;--no-sandbox&#34;)
         self.driver_options.add_argument(&#34;--log-level=3&#34;)
         self.driver_options.add_argument(&#34;ignore-certificate-errors&#34;)
         self.driver_options.add_experimental_option(
@@ -201,6 +202,7 @@ time the class is called.</p>
         self.driver_options = webdriver.ChromeOptions()
         self.driver_options.Proxy = self.selenium_proxy
         self.driver_options.add_argument(&#34;headless&#34;)
+        self.driver_options.add_argument(&#34;--no-sandbox&#34;)
         self.driver_options.add_argument(&#34;--log-level=3&#34;)
         self.driver_options.add_argument(&#34;ignore-certificate-errors&#34;)
         self.driver_options.add_experimental_option(
@@ -264,6 +266,7 @@ time the class is called.</p>
 <li><a title="cmc.modules.cryptocurrency.gainers.TopGainers" href="cryptocurrency/gainers.html#cmc.modules.cryptocurrency.gainers.TopGainers">TopGainers</a></li>
 <li><a title="cmc.modules.cryptocurrency.losers.TopLosers" href="cryptocurrency/losers.html#cmc.modules.cryptocurrency.losers.TopLosers">TopLosers</a></li>
 <li><a title="cmc.modules.cryptocurrency.most_visited.MostVisited" href="cryptocurrency/most_visited.html#cmc.modules.cryptocurrency.most_visited.MostVisited">MostVisited</a></li>
+<li><a title="cmc.modules.cryptocurrency.price_prediction.PricePrediction" href="cryptocurrency/price_prediction.html#cmc.modules.cryptocurrency.price_prediction.PricePrediction">PricePrediction</a></li>
 <li><a title="cmc.modules.cryptocurrency.ranking.Ranking" href="cryptocurrency/ranking.html#cmc.modules.cryptocurrency.ranking.Ranking">Ranking</a></li>
 <li><a title="cmc.modules.cryptocurrency.recently_added.RecentlyAdded" href="cryptocurrency/recently_added.html#cmc.modules.cryptocurrency.recently_added.RecentlyAdded">RecentlyAdded</a></li>
 <li><a title="cmc.modules.cryptocurrency.trending.Trending" href="cryptocurrency/trending.html#cmc.modules.cryptocurrency.trending.Trending">Trending</a></li>

@@ -1,5 +1,6 @@
 from cmc.modules.cryptocurrency.currency import CryptoCurrency
 from cmc.modules.cryptocurrency.most_visited import MostVisited
+from cmc.modules.cryptocurrency.price_prediction import PricePrediction
 from cmc.modules.cryptocurrency.ranking import Ranking
 from cmc.modules.cryptocurrency.recently_added import RecentlyAdded
 from cmc.modules.cryptocurrency.gainers import TopGainers
@@ -27,6 +28,7 @@ from cmc.utils.models import (
     TopGainersData,
     TopLosersData,
     TrendingData,
+    PricePredictionData,
     RankingData,
     RecentlyAddedData,
     ExchangeData,

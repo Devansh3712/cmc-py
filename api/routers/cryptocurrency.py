@@ -7,6 +7,7 @@ from fastapi import APIRouter, HTTPException, status, Query
 from cmc import (
     CryptoCurrency,
     MostVisited,
+    PricePrediction,
     Ranking,
     RecentlyAdded,
     TopGainers,
@@ -22,6 +23,7 @@ from api.utils.schemas import (
     TopGainersData,
     TopLosersData,
     TrendingData,
+    PricePredictionData,
     RankingData,
     RecentlyAddedData,
 )
@@ -91,6 +93,19 @@ async def trending():
             return redis.get_data("trending")
         result = Trending(as_dict=True).get_data
         redis.add_data("trending", result)
+        return result
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Unable to fetch data."
+        )
+
+
+@router.get(
+    "/priceprediction", response_model=Dict[int, Dict[int, PricePredictionData]]
+)
+async def price_prediction(pages: List[int] = Query([1])):
+    try:
+        result = PricePrediction(pages=pages, as_dict=True).get_data
         return result
     except:
         raise HTTPException(
