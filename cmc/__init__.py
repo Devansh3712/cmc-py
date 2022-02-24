@@ -13,6 +13,7 @@ from cmc.modules.exchange.exchange import Exchange
 from cmc.modules.exchange.lending import Lending
 from cmc.modules.exchange.spot import Spot
 
+from cmc.modules.nft.airdrop import OngoingAirdrops, UpcomingAirdrops
 from cmc.modules.nft.collection import NFTRanking
 from cmc.modules.nft.upcoming import UpcomingSale
 

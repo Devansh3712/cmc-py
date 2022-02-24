@@ -162,6 +162,25 @@ class NFTRankingData(BaseModel):
     timestamp: datetime
 
 
+class OngoingAirdropsData(BaseModel):
+    name: str
+    symbol: str
+    url: str
+    participated: str
+    winners: str
+    airdrop_amount: str
+    ends_on: str
+
+
+class UpcomingAirdropsData(BaseModel):
+    name: str
+    symbol: str
+    url: str
+    winners: str
+    airdrop_amount: str
+    starts_on: str
+
+
 class UpcomingSaleData(BaseModel):
     name: str
     blockchain: str

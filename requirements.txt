@@ -8,7 +8,7 @@ black==22.1.0; python_full_version >= "3.6.2"
 certifi==2021.10.8
 cffi==1.15.0; os_name == "nt" and implementation_name != "pypy" and python_version >= "3.7" and python_version < "4.0" and (python_version >= "3.7" and python_full_version < "3.0.0" and python_version < "4.0" or python_full_version >= "3.5.0" and python_version < "4" and python_version >= "3.7")
 charset-normalizer==2.0.12; python_full_version >= "3.6.1" and python_version >= "3.6"
-click==8.0.3; python_version >= "3.6" and python_full_version >= "3.6.2"
+click==8.0.4; python_version >= "3.6" and python_full_version >= "3.6.2"
 colorama==0.4.4
 configparser==5.2.0; python_version >= "3.6"
 crayons==0.4.0; python_version >= "3.6"
@@ -34,7 +34,7 @@ outcome==1.1.0; python_version >= "3.7" and python_version < "4.0"
 packaging==21.3; python_version >= "3.6"
 pathspec==0.9.0; python_full_version >= "3.6.2"
 pdoc3==0.10.0; python_version >= "3.6"
-platformdirs==2.5.0; python_version >= "3.7" and python_full_version >= "3.6.2"
+platformdirs==2.5.1; python_version >= "3.7" and python_full_version >= "3.6.2"
 pluggy==1.0.0; python_version >= "3.6"
 py==1.11.0; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
 pycparser==2.21; python_version >= "3.7" and python_full_version < "3.0.0" and os_name == "nt" and implementation_name != "pypy" and python_version < "4.0" or os_name == "nt" and implementation_name != "pypy" and python_version >= "3.7" and python_version < "4.0" and python_full_version >= "3.4.0"
@@ -55,7 +55,7 @@ soupsieve==2.3.1; python_version >= "3.6" and python_full_version > "3.0.0"
 starlette==0.17.1; python_version >= "3.6" and python_full_version >= "3.6.1"
 tomli==2.0.1; python_version >= "3.7" and python_full_version >= "3.6.2"
 trio-websocket==0.9.2; python_version >= "3.7" and python_version < "4.0"
-trio==0.19.0; python_version >= "3.7" and python_version < "4.0"
+trio==0.20.0; python_version >= "3.7" and python_version < "4.0"
 types-pyyaml==6.0.4
 types-redis==4.1.16
 types-requests==2.27.10
@@ -66,6 +66,6 @@ urllib3==1.26.8; python_full_version >= "3.6.1" and python_version < "4" and pyt
 uvicorn==0.15.0; python_full_version >= "3.6.1"
 watchgod==0.7
 webdriver-manager==3.5.3; python_version >= "3.6"
-websockets==10.1
+websockets==10.2
 wrapt==1.13.3; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
 wsproto==1.0.0; python_version >= "3.7" and python_version < "4.0" and python_full_version >= "3.6.1"
