@@ -60,7 +60,7 @@ if __name__ == "__main__":
             "trio-websocket==0.9.2",
             "urllib3==1.26.8",
             "webdriver-manager==3.5.3",
-            "wsproto==1.0.0",
+            "wsproto==1.1.0",
         ],
         classifiers=[
             "Programming Language :: Python :: 3.9",
