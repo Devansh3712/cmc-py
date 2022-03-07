@@ -17,7 +17,7 @@ selenium = "^4.1.2"
 webdriver-manager = "^3.5.2"
 pytest = "^7.0.1"
 pdoc3 = "^0.10.0"
-fastapi = {extras = ["all"], version = "^0.74.0"}
+fastapi = {extras = ["all"], version = "^0.75.0"}
 redis = "^4.1.4"
 types-redis = "^4.1.17"
 types-PyYAML = "^6.0.4"
