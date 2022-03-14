@@ -1,18 +1,20 @@
 #!/usr/bin/env python
 
-"""Module for validating schemas of API function responses."""
+"""Module for creating strawberry schemas for GraphQL responses."""
 
 from datetime import datetime
-from typing import Optional, Tuple
-from pydantic import BaseModel
+from typing import Optional, List
+
+import strawberry
 
 
-class CryptoCurrencyData(BaseModel):
+@strawberry.type
+class CryptoCurrencyData:
     name: str
     symbol: str
     rank: str
     price: str
-    price_percent: Tuple[str, ...]
+    price_percent: List[str]
     price_change: str
     low_24h: str
     high_24h: str
@@ -28,21 +30,23 @@ class CryptoCurrencyData(BaseModel):
     timestamp: datetime
 
 
-class MostVisitedData(BaseModel):
+@strawberry.type
+class MostVisitedData:
     name: str
     symbol: str
     cmc_name: str
     url: str
     price: str
-    percent_24h: Tuple[str, ...]
-    percent_7d: Tuple[str, ...]
-    percent_30d: Tuple[str, ...]
+    percent_24h: List[str]
+    percent_7d: List[str]
+    percent_30d: List[str]
     market_cap: str
     volume_24h: str
     timestamp: datetime
 
 
-class TopGainersData(BaseModel):
+@strawberry.type
+class TopGainersData:
     name: str
     symbol: str
     rank: str
@@ -54,7 +58,8 @@ class TopGainersData(BaseModel):
     timestamp: datetime
 
 
-class TopLosersData(BaseModel):
+@strawberry.type
+class TopLosersData:
     name: str
     symbol: str
     rank: str
@@ -66,21 +71,23 @@ class TopLosersData(BaseModel):
     timestamp: datetime
 
 
-class TrendingData(BaseModel):
+@strawberry.type
+class TrendingData:
     name: str
     symbol: str
     cmc_name: str
     url: str
     price: str
-    percent_24h: Tuple[str, ...]
-    percent_7d: Tuple[str, ...]
-    percent_30d: Tuple[str, ...]
+    percent_24h: List[str]
+    percent_7d: List[str]
+    percent_30d: List[str]
     market_cap: str
     volume_24h: str
     timestamp: datetime
 
 
-class PricePredictionData(BaseModel):
+@strawberry.type
+class PricePredictionData:
     name: str
     symbol: str
     cmc_name: str
@@ -94,7 +101,8 @@ class PricePredictionData(BaseModel):
     timestamp: datetime
 
 
-class RankingData(BaseModel):
+@strawberry.type
+class RankingData:
     name: str
     symbol: str
     cmc_name: str
@@ -102,14 +110,15 @@ class RankingData(BaseModel):
     timestamp: datetime
 
 
-class RecentlyAddedData(BaseModel):
+@strawberry.type
+class RecentlyAddedData:
     name: str
     symbol: str
     cmc_name: str
     url: str
     price: str
-    percent_1h: Tuple[str, ...]
-    percent_24h: Tuple[str, ...]
+    percent_1h: List[str]
+    percent_24h: List[str]
     fully_diluted_market_cap: str
     volume_24h: str
     blockchain: str
@@ -117,15 +126,17 @@ class RecentlyAddedData(BaseModel):
     timestamp: datetime
 
 
-class ExchangeData(BaseModel):
+@strawberry.type
+class ExchangeData:
     name: str
-    volume_24h: Tuple[str, ...]
+    volume_24h: List[str]
     website: str
     cmc_url: str
     timestamp: datetime
 
 
-class DerivativesData(BaseModel):
+@strawberry.type
+class DerivativesData:
     name: str
     cmc_link: str
     cmc_name: str
@@ -133,7 +144,8 @@ class DerivativesData(BaseModel):
     timestamp: datetime
 
 
-class DexData(BaseModel):
+@strawberry.type
+class DexData:
     name: str
     cmc_link: str
     cmc_name: str
@@ -141,7 +153,8 @@ class DexData(BaseModel):
     timestamp: datetime
 
 
-class LendingData(BaseModel):
+@strawberry.type
+class LendingData:
     name: str
     cmc_link: str
     cmc_name: str
@@ -149,7 +162,8 @@ class LendingData(BaseModel):
     timestamp: datetime
 
 
-class SpotData(BaseModel):
+@strawberry.type
+class SpotData:
     name: str
     cmc_link: str
     cmc_name: str
@@ -157,12 +171,14 @@ class SpotData(BaseModel):
     timestamp: datetime
 
 
-class NFTRankingData(BaseModel):
+@strawberry.type
+class NFTRankingData:
     name: str
     timestamp: datetime
 
 
-class OngoingAirdropsData(BaseModel):
+@strawberry.type
+class OngoingAirdropsData:
     name: str
     symbol: str
     url: str
@@ -172,7 +188,8 @@ class OngoingAirdropsData(BaseModel):
     ends_on: str
 
 
-class UpcomingAirdropsData(BaseModel):
+@strawberry.type
+class UpcomingAirdropsData:
     name: str
     symbol: str
     url: str
@@ -181,7 +198,8 @@ class UpcomingAirdropsData(BaseModel):
     starts_on: str
 
 
-class UpcomingSaleData(BaseModel):
+@strawberry.type
+class UpcomingSaleData:
     name: str
     blockchain: str
     info: str

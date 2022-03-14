@@ -38,5 +38,7 @@ from cmc.utils.models import (
     LendingData,
     SpotData,
     NFTRankingData,
+    OngoingAirdropsData,
+    UpcomingAirdropsData,
     UpcomingSaleData,
 )

@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 
-"""Router for cryptocurrency module methods of cmc-py."""
+"""REST Router for cryptocurrency module methods of cmc-py."""
 
 from typing import Dict, List
+
 from fastapi import APIRouter, HTTPException, status, Query
+
+from api.utils.database import Database
 from cmc import (
     CryptoCurrency,
     MostVisited,
@@ -15,9 +18,6 @@ from cmc import (
     Trending,
     InvalidCryptoCurrencyURL,
     InvalidPageURL,
-)
-from api.utils.database import Database
-from api.utils.schemas import (
     CryptoCurrencyData,
     MostVisitedData,
     TopGainersData,

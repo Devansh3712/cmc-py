@@ -97,7 +97,9 @@ class Exchange(CMCBaseClass):
             bool: True if page exists else False.
         """
         soup = BeautifulSoup(page_data, features="lxml")
-        error_message = soup.find_all("div", class_="sc-404__StyledError-ic5ef7-0 fygxIm")
+        error_message = soup.find_all(
+            "div", class_="sc-404__StyledError-ic5ef7-0 fygxIm"
+        )
         if error_message == []:
             return True
         return False

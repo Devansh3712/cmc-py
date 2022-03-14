@@ -3,10 +3,15 @@
 """Router for NFT module methods of cmc-py."""
 
 from typing import Dict, List
+
 from fastapi import APIRouter, HTTPException, status, Query
-from cmc import NFTRanking, OngoingAirdrops, UpcomingAirdrops, UpcomingSale
+
 from api.utils.database import Database
-from api.utils.schemas import (
+from cmc import (
+    NFTRanking,
+    OngoingAirdrops,
+    UpcomingAirdrops,
+    UpcomingSale,
     NFTRankingData,
     OngoingAirdropsData,
     UpcomingAirdropsData,

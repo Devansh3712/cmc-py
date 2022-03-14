@@ -5,9 +5,10 @@
 from datetime import datetime
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.routers import cryptocurrency, exchange, nft
+from api.rest.routers import cryptocurrency, exchange, nft
+from api.graphql.routers.cryptocurrency import cryptocurrency_router
 
-app = FastAPI()
+app = FastAPI(title="Unofficial CoinMarketCap API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,6 +19,7 @@ app.add_middleware(
 app.include_router(cryptocurrency.router)
 app.include_router(exchange.router)
 app.include_router(nft.router)
+app.include_router(cryptocurrency_router, prefix="/graphql/cryptocurrency")
 
 
 @app.get("/")

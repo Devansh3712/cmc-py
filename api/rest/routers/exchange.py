@@ -3,10 +3,17 @@
 """Router for exchange module methods of cmc-py."""
 
 from typing import Dict
+
 from fastapi import APIRouter, HTTPException, status
-from cmc import Derivatives, Dex, Exchange, Lending, Spot, InvalidExchangeURL
+
 from api.utils.database import Database
-from api.utils.schemas import (
+from cmc import (
+    Derivatives,
+    Dex,
+    Exchange,
+    Lending,
+    Spot,
+    InvalidExchangeURL,
     ExchangeData,
     DerivativesData,
     DexData,
